@@ -3,6 +3,9 @@ import Lottie from 'lottie-react';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { Button, Div, Form, Input, Label, Option, Select } from '../../ui';
 import loadingData from '../../../assets/lotties/loading.json';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useNavigate } from 'react-router';
+import { login } from '../../../features/auth/authSlice';
 
 const dataFac: { name: string; value: string }[] = [
   { name: '---Choose Factory---', value: '' },
@@ -21,8 +24,22 @@ interface IFormInput {
 const LoginLayout = () => {
   const { width, height } = useWindowSize();
   const { register, handleSubmit } = useForm<IFormInput>();
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const loginPayload = {
+      account: data.account,
+      password: data.password,
+      factory: data.factory,
+    };
+
+    const resultAction = await dispatch(login(loginPayload));
+    if (login.fulfilled.match(resultAction)) {
+      navigate('/');
+    }
+  };
 
   return (
     <Div
