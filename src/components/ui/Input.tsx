@@ -7,6 +7,8 @@ interface InputProps {
   type?: string;
   value?: string;
   id?: string;
+  autoComplete?: string;
+  ariaInvalid?: boolean | 'true' | 'false' | 'grammar' | 'spelling' | undefined;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -17,6 +19,8 @@ const Input = ({
   type,
   value,
   id,
+  autoComplete,
+  ariaInvalid,
   onChange,
   ...rest
 }: InputProps) => {
@@ -29,6 +33,8 @@ const Input = ({
       id={id}
       onChange={onChange}
       placeholder={placeholder}
+      autoComplete={autoComplete}
+      aria-invalid={ariaInvalid}
       {...rest}
     />
   );
