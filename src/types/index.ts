@@ -10,7 +10,6 @@ export interface ICommonProps<T = unknown> {
   className?: string;
   children?: React.ReactNode;
   ref?: React.RefObject<T>;
-  type?: 'submit' | 'reset' | 'button' | undefined;
   htmlFor?: string;
   onMouseDown?: (e: React.MouseEvent<T>) => void;
   onMouseMove?: (e: React.MouseEvent<T>) => void;

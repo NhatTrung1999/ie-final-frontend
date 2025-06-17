@@ -11,6 +11,7 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         width={'100%'}
         height={playerHeight}
         controls
+        muted
       />
     </Div>
   );

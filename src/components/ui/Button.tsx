@@ -1,8 +1,24 @@
 import type { ICommonProps } from '../../types';
 
-const Button = ({ style, className, children, type }: ICommonProps) => {
+interface IButtonProps extends ICommonProps {
+  type?: 'submit' | 'reset' | 'button' | undefined;
+  handleClick?: () => void;
+}
+
+const Button = ({
+  style,
+  className,
+  children,
+  type,
+  handleClick,
+}: IButtonProps) => {
   return (
-    <button type={type} style={style} className={className}>
+    <button
+      type={type}
+      style={style}
+      className={className}
+      onClick={handleClick}
+    >
       {children}
     </button>
   );
