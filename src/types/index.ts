@@ -57,3 +57,23 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
 }
+
+export interface IFormModal {
+  date: string;
+  season: string;
+  stage: string;
+  area: string;
+  article: string;
+  video: FileList;
+}
+
+export interface IFormPayload {
+  date: string;
+  season: string;
+  stage: string;
+  area: string;
+  article: string;
+  video: FileList;
+  created_by: string;
+  signal?: AbortSignal;
+}

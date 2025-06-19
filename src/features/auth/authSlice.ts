@@ -16,16 +16,21 @@ interface IUser {
 interface IAuthState {
   user: IUser | null;
   accessToken: string | null;
-  // refreshToken?: string | null;
   isLoading: boolean;
   error: string | null;
   isAuthenticated: boolean;
 }
 
 const initialState: IAuthState = {
-  user: null,
+  user: (() => {
+    try {
+      const userData = localStorage.getItem('user');
+      return userData ? JSON.parse(userData) : null;
+    } catch {
+      return null;
+    }
+  })(),
   accessToken: localStorage.getItem('accessToken') || null,
-  // refreshToken?: localStorage.getItem('refreshToken') || null,
   isLoading: false,
   error: null,
   isAuthenticated: false,
@@ -37,6 +42,7 @@ export const login = createAsyncThunk(
     try {
       const { access_token, user } = await authApi.login(credentials);
       localStorage.setItem('accessToken', access_token);
+      localStorage.setItem('user', JSON.stringify(user));
       return { access_token, user };
     } catch (error: any) {
       return rejectWithValue(error.response.data.message || 'Login failed!');
@@ -44,43 +50,24 @@ export const login = createAsyncThunk(
   }
 );
 
-// export const logout = createAsyncThunk(
-//   'auth/logout',
-//   async (_, { dispatch }) => {
-//     try {
-//       await authApi.logout();
-//     } catch (error: any) {
-//       console.error('Erroe when call Api logut: ', error);
-//     } finally {
-//       localStorage.clear();
-//       dispatch(authSlice.actions.clearAuth());
-//     }
-//   }
-// );
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     initialAuth: (state) => {
       const token = localStorage.getItem('accessToken');
-      if (token) {
+      const user = localStorage.getItem('user');
+      if (token && user) {
         state.isAuthenticated = true;
         state.accessToken = token;
+        state.user = JSON.parse(user) ?? null;
         state.error = null;
       } else {
         state.accessToken = null;
+        state.user = null;
         state.isAuthenticated = false;
       }
     },
-    // clearAuth: (state) => {
-    //   state.user = null;
-    //   state.accessToken = null;
-    //   // state.refreshToken = null;
-    //   state.isAuthenticated = false;
-    //   state.isLoading = false;
-    //   state.error = null;
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -92,7 +79,6 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = true;
         state.accessToken = action.payload.access_token;
-        // state.refreshToken = action.payload.refreshToken;
         state.user = action.payload.user;
         state.error = null;
       })
@@ -100,14 +86,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = false;
         state.accessToken = null;
-        // state.refreshToken = null;
         state.user = null;
         state.error = (action.payload as string) || 'Login failed!';
       });
-    // .addCase(logout.fulfilled, (state) => {
-    //   state.isLoading = false;
-    //   state.error = null;
-    // });
   },
 });
 

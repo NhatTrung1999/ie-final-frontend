@@ -1,14 +1,9 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Div, Form, Input, Label, Option, Select } from '../ui';
-
-interface IFormModal {
-  date: string;
-  season: string;
-  stage: string;
-  area: string;
-  article: string;
-  video: FileList;
-}
+import type { IFormModal } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { cancelUpload, uploadVideo } from '../../features/video/videoSlice';
+import { useRef } from 'react';
 
 const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const {
@@ -20,9 +15,35 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
       date: new Date().toISOString().split('T')[0],
     },
   });
+  const { user } = useAppSelector((state) => state.auth);
+
+  const dispatch = useAppDispatch();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const onSubmit: SubmitHandler<IFormModal> = (data) => {
-    console.log(data);
+    console.log(user);
+    abortControllerRef.current = new AbortController();
+    const { date, season, stage, area, article, video } = data;
+    dispatch(
+      uploadVideo({
+        date,
+        season,
+        stage,
+        area,
+        article,
+        video,
+        created_by: user?.account || 'unknown',
+        signal: abortControllerRef.current.signal,
+      })
+    );
+  };
+
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort(); // Hủy request
+      dispatch(cancelUpload()); // Reset trạng thái
+      setIsOpen?.(false); // Đóng modal
+    }
   };
 
   return (
@@ -71,6 +92,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm outline-none rounded-lg block w-full p-2.5"
                   {...register('date', { required: true })}
                   ariaInvalid={errors.date ? 'true' : 'false'}
+                  autoComplete="off"
                 />
                 {errors?.date?.type === 'required' && (
                   <p role="alert" className="text-red-500">
@@ -92,6 +114,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   placeholder="Enter your season..."
                   {...register('season', { required: true })}
                   ariaInvalid={errors.season ? 'true' : 'false'}
+                  autoComplete="off"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
                 />
                 {errors?.season?.type === 'required' && (
@@ -144,6 +167,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   placeholder="Enter your area..."
                   {...register('area', { required: true })}
                   ariaInvalid={errors.area ? 'true' : 'false'}
+                  autoComplete="off"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
                 />
                 {errors?.area?.type === 'required' && (
@@ -166,6 +190,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   placeholder="Enter your article..."
                   {...register('article', { required: true })}
                   ariaInvalid={errors.article ? 'true' : 'false'}
+                  autoComplete="off"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
                 />
                 {errors?.article?.type === 'required' && (
@@ -199,12 +224,22 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                 )}
               </Div>
 
-              <Button
-                type="submit"
-                className="w-full text-white bg-blue-500 hover:bg-blue-600 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Upload
-              </Button>
+              <Div className="flex gap-x-2">
+                <Button
+                  type="submit"
+                  className="w-full text-white bg-blue-500 hover:bg-blue-600 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                  Upload
+                </Button>
+
+                <Button
+                  type="button"
+                  handleClick={handleCancel}
+                  className="w-full text-white bg-red-500 hover:bg-red-600 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                  Cancel
+                </Button>
+              </Div>
             </Form>
           </Div>
         </Div>
