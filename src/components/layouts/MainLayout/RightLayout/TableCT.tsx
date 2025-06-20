@@ -27,7 +27,9 @@ const TableCT = ({
               </th>
               <th className="border border-t-0 px-2 py-1">Type</th>
               {Array.from({ length: 10 }).map((_, i) => (
-                <th className="border border-t-0 px-2 py-1">CT{i + 1}</th>
+                <th key={i} className="border border-t-0 px-2 py-1">
+                  CT{i + 1}
+                </th>
               ))}
               <th className="border border-t-0 px-2 py-1">Average</th>
               <th className="border border-t-0 px-2 py-1">Confirm</th>

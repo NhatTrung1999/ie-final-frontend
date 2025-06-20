@@ -15,6 +15,7 @@ export interface ICommonProps<T = unknown> {
   onMouseMove?: (e: React.MouseEvent<T>) => void;
   onMouseUp?: (e: React.MouseEvent<T>) => void;
   onMouseLeave?: (e: React.MouseEvent<T>) => void;
+  onClick?: () => void;
 }
 
 export interface LoginPayload {

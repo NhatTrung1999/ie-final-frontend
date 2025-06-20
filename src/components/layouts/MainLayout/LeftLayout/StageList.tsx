@@ -1,15 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { CardHeader, Modal } from '../../../common';
 import { Div } from '../../../ui';
-
-const arrList: string[] = [
-  'C1. React',
-  'C2. HTML',
-  'C3. JavaScript',
-  'C4. Css',
-  'C5. HTML',
-  'C6. TypeScript',
-];
+import { useAppSelector } from '../../../../app/hooks';
 
 const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -17,6 +9,10 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const startX = useRef<number>(0);
   const scrollLeftStart = useRef<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [activeId, setActiveId] = useState<number>(0);
+  const [activeItemId, setActiveItemId] = useState<number | null>(null);
+
+  const { area } = useAppSelector((state) => state.area);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement | null>) => {
     isDragging.current = true;
@@ -66,29 +62,30 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
         >
-          <Div className="bg-amber-200 px-2 py-1 rounded-md uppercase font-semibold">
-            Cutting
-          </Div>
-          <Div className="bg-amber-200 px-2 py-1 rounded-md uppercase font-semibold">
-            Stitching
-          </Div>
-          <Div className="bg-amber-200 px-2 py-1 rounded-md uppercase font-semibold">
-            Assembly
-          </Div>
-          <Div className="bg-amber-200 px-2 py-1 rounded-md uppercase font-semibold">
-            Stockfitting
-          </Div>
-          <Div className="bg-amber-200 px-2 py-1 rounded-md uppercase font-semibold">
-            Nosew
-          </Div>
+          {area.map((item) => (
+            <Div
+              key={item.id}
+              className={`${
+                item.id === activeId ? 'bg-amber-200' : ''
+              } px-2 py-1 rounded-md font-semibold`}
+              onClick={() => setActiveId(item.id)}
+            >
+              {item.name}
+            </Div>
+          ))}
         </Div>
-        <Div className=" flex-1 overflow-y-auto bg-yellow-200 flex flex-col gap-1 rounded-b-md">
-          {arrList.map((item, index) => (
+        <Div className=" flex-1 overflow-y-auto bg-yellow-200 flex flex-col gap-1 rounded-b-md p-1">
+          {area[activeId].data.map((item, index) => (
             <Div
               key={index}
-              className="bg-white px-3 py-1 flex flex-row justify-between items-center cursor-pointer"
+              className={`${
+                item.id === activeItemId ? 'bg-white' : ''
+              } hover:bg-gray-200 px-3 py-1 flex flex-row justify-between items-center cursor-pointer`}
+              onClick={() =>
+                setActiveItemId(item.id === activeItemId ? null : item.id)
+              }
             >
-              <Div className="text-lg font-medium">{item}</Div>
+              <Div className="text-lg font-medium">{item.name}</Div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"

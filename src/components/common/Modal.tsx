@@ -21,7 +21,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const onSubmit: SubmitHandler<IFormModal> = (data) => {
-    console.log(user);
+    // console.log(user);
     abortControllerRef.current = new AbortController();
     const { date, season, stage, area, article, video } = data;
     dispatch(
@@ -36,6 +36,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
         signal: abortControllerRef.current.signal,
       })
     );
+    setIsOpen?.(false);
   };
 
   const handleCancel = () => {

@@ -9,6 +9,7 @@ const Div = ({
   onMouseMove,
   onMouseLeave,
   onMouseUp,
+  onClick,
 }: ICommonProps<HTMLDivElement | null>) => {
   return (
     <div
@@ -19,6 +20,7 @@ const Div = ({
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
+      onClick={onClick}
     >
       {children}
     </div>

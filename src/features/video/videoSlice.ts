@@ -5,12 +5,14 @@ import videoApi from '../../services/api/videoApi';
 interface IVideoState {
   isLoading: boolean;
   error: string | null;
+  message: string;
   data: any;
 }
 
 const initialState: IVideoState = {
   data: null,
   isLoading: false,
+  message: '',
   error: null,
 };
 export const cancelUpload = createAsyncThunk('video/cancel', async () => {
@@ -38,7 +40,7 @@ export const uploadVideo = createAsyncThunk(
     }
     try {
       const response = await videoApi.uploadVideo(formData, signal);
-      console.log(response);
+      return response;
     } catch (error: any) {
       if (error.name === 'AbortError') {
         return rejectWithValue('Upload canceled');
@@ -55,13 +57,19 @@ const videoSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(uploadVideo.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
         // console.log(state);
       })
       .addCase(uploadVideo.fulfilled, (state, action) => {
         // console.log(state, action.payload);
+        state.isLoading = false;
+        state.message = action.payload?.message;
       })
       .addCase(uploadVideo.rejected, (state, action) => {
         // console.log(state, action.payload);
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
