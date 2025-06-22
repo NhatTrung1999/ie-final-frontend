@@ -1,3 +1,4 @@
+import type { IVideoResponse } from '../../types';
 import axiosConfig from '../axiosConfig';
 
 const videoApi = {
@@ -11,6 +12,10 @@ const videoApi = {
     } catch (error: any) {
       throw error;
     }
+  },
+  getVideo: async (): Promise<IVideoResponse[]> => {
+    const response = await axiosConfig.get('/video');
+    return response.data.data;
   },
 };
 

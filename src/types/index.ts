@@ -78,3 +78,49 @@ export interface IFormPayload {
   created_by: string;
   signal?: AbortSignal;
 }
+
+export interface IVideoResponse {
+  id: number;
+  date: string;
+  season: string;
+  stage: string;
+  area: string;
+  article: string;
+  video_name: string;
+  video_path: string;
+  created_by: string;
+  created_at: string;
+}
+
+export interface ITablectHeader {
+  no: string;
+  progressStagePartName: string;
+  type: string;
+  cts: number;
+  average: string;
+  confirm: string;
+  action: string;
+}
+
+export interface ITablectResponse {
+  id: number;
+  id_video: number;
+  no: string;
+  progress_stage_part_name: string;
+  type: string;
+  cts: number[];
+  average: number;
+  confirm: string;
+  created_at: string;
+}
+
+export interface ITablectPayload {
+  id_video: number;
+  no: string;
+  progress_stage_part_name: string;
+  type: string;
+  cts: number[];
+  average: number;
+  confirm: string;
+  created_at: Date;
+}

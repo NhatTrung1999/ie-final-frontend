@@ -1,6 +1,15 @@
+import { useEffect } from 'react';
 import { Div, Header } from '../ui';
+import { useAppDispatch } from '../../app/hooks';
+import { getVideo } from '../../features/video/videoSlice';
 
 const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getVideo());
+  }, [dispatch]);
+
   return (
     <Header style={{ height: headerHeight }} className="px-2 pt-2">
       <Div className="bg-teal-400 h-full rounded-md flex items-center justify-between px-2">

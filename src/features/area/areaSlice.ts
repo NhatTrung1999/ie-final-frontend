@@ -1,9 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-interface IDataArea {
+export interface IDataArea {
   id: number;
-  name: string;
-  path: string;
+  date: string;
+  season: string;
+  stage: string;
+  area: string;
+  article: string;
+  video_name: string;
+  video_path: string;
+  created_by: string;
+  created_at: string;
 }
 
 interface IArea {
@@ -21,31 +28,47 @@ const initialState: IAreaState = {
     {
       id: 0,
       name: 'CUTTING',
-      data: [{ id: 1, name: 'CUTTING', path: 'NOSEW' }],
+      data: [],
     },
     {
       id: 1,
       name: 'STITCHING',
-      data: [{ id: 1, name: 'STITCHING', path: 'NOSEW' }],
+      data: [],
     },
     {
       id: 2,
       name: 'ASSEMBLY',
-      data: [{ id: 1, name: 'ASSEMBLY', path: 'NOSEW' }],
+      data: [],
     },
     {
       id: 3,
       name: 'STOCKFITTING',
-      data: [{ id: 1, name: 'STOCKFITTING', path: 'NOSEW' }],
+      data: [],
     },
-    { id: 4, name: 'NOSEW', data: [{ id: 1, name: 'NOSEW', path: 'NOSEW' }] },
+    { id: 4, name: 'NOSEW', data: [] },
   ],
 };
 
 const areaSlice = createSlice({
   name: 'area',
   initialState,
-  reducers: {},
+  reducers: {
+    setAreaData: (state, action: PayloadAction<IDataArea[]>) => {
+      const payload = action.payload;
+      payload.forEach((item) => {
+        const area = state.area.find(
+          (a) => a.name.toLowerCase() === item.area.toLowerCase()
+        );
+        if (area) {
+          if (!area.data.some((existing) => existing.id === item.id)) {
+            area.data.push(item);
+          }
+        }
+      });
+    },
+  },
 });
+
+export const { setAreaData } = areaSlice.actions;
 
 export default areaSlice.reducer;

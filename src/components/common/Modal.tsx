@@ -2,7 +2,11 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Div, Form, Input, Label, Option, Select } from '../ui';
 import type { IFormModal } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { cancelUpload, uploadVideo } from '../../features/video/videoSlice';
+import {
+  cancelUpload,
+  getVideo,
+  uploadVideo,
+} from '../../features/video/videoSlice';
 import { useRef } from 'react';
 
 const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
@@ -20,11 +24,11 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const dispatch = useAppDispatch();
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const onSubmit: SubmitHandler<IFormModal> = (data) => {
+  const onSubmit: SubmitHandler<IFormModal> = async (data) => {
     // console.log(user);
     abortControllerRef.current = new AbortController();
     const { date, season, stage, area, article, video } = data;
-    dispatch(
+    const uploadResult = await dispatch(
       uploadVideo({
         date,
         season,
@@ -36,7 +40,10 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
         signal: abortControllerRef.current.signal,
       })
     );
-    setIsOpen?.(false);
+    if (uploadVideo.fulfilled.match(uploadResult)) {
+      dispatch(getVideo());
+      setIsOpen?.(false);
+    }
   };
 
   const handleCancel = () => {
@@ -116,7 +123,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   {...register('season', { required: true })}
                   ariaInvalid={errors.season ? 'true' : 'false'}
                   autoComplete="off"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
+                  className="bg-gray-50 border uppercase border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
                 />
                 {errors?.season?.type === 'required' && (
                   <p role="alert" className="text-red-500">
@@ -162,15 +169,18 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                 >
                   Area
                 </Label>
-                <Input
-                  type="text"
+                <Select
                   id="area"
-                  placeholder="Enter your area..."
                   {...register('area', { required: true })}
-                  ariaInvalid={errors.area ? 'true' : 'false'}
-                  autoComplete="off"
+                  {...{ ['aria-invalid']: errors.area ? 'true' : 'false' }}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
-                />
+                >
+                  <Option value="CUTTING" name="CUTTING" />
+                  <Option value="STITCHING" name="STITCHING" />
+                  <Option value="ASSEMBLY" name="ASSEMBLY" />
+                  <Option value="STOCKFITTING" name="STOCKFITTING" />
+                  <Option value="NOSEW" name="NOSEW" />
+                </Select>
                 {errors?.area?.type === 'required' && (
                   <p role="alert" className="text-red-500">
                     Please do not it blank!
@@ -192,7 +202,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                   {...register('article', { required: true })}
                   ariaInvalid={errors.article ? 'true' : 'false'}
                   autoComplete="off"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 uppercase text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5"
                 />
                 {errors?.article?.type === 'required' && (
                   <p role="alert" className="text-red-500">

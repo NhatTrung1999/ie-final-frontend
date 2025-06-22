@@ -1,16 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { IFormPayload } from '../../types';
 import videoApi from '../../services/api/videoApi';
+import { setAreaData } from '../area/areaSlice';
 
 interface IVideoState {
   isLoading: boolean;
   error: string | null;
   message: string;
-  data: any;
 }
 
 const initialState: IVideoState = {
-  data: null,
   isLoading: false,
   message: '',
   error: null,
@@ -26,12 +25,12 @@ export const uploadVideo = createAsyncThunk(
       payload;
     const formData = new FormData();
 
-    formData.append('date', date);
-    formData.append('season', season);
-    formData.append('stage', stage);
-    formData.append('area', area);
-    formData.append('article', article);
-    formData.append('created_by', created_by);
+    formData.append('date', date.trim());
+    formData.append('season', season.toUpperCase().trim());
+    formData.append('stage', stage.trim());
+    formData.append('area', area.trim());
+    formData.append('article', article.toUpperCase().trim());
+    formData.append('created_by', created_by.trim());
 
     if (video) {
       for (let i = 0; i < video.length; i++) {
@@ -50,6 +49,19 @@ export const uploadVideo = createAsyncThunk(
   }
 );
 
+export const getVideo = createAsyncThunk(
+  'video/getVideo',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const data = await videoApi.getVideo();
+      dispatch(setAreaData(data));
+      return 'Get successfull!';
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'error');
+    }
+  }
+);
+
 const videoSlice = createSlice({
   name: 'video',
   initialState,
@@ -59,17 +71,28 @@ const videoSlice = createSlice({
       .addCase(uploadVideo.pending, (state) => {
         state.isLoading = true;
         state.error = null;
-        // console.log(state);
       })
       .addCase(uploadVideo.fulfilled, (state, action) => {
-        // console.log(state, action.payload);
         state.isLoading = false;
         state.message = action.payload?.message;
       })
       .addCase(uploadVideo.rejected, (state, action) => {
-        // console.log(state, action.payload);
         state.isLoading = false;
         state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(getVideo.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getVideo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.message = action.payload;
+      })
+      .addCase(getVideo.rejected, (state, aciton) => {
+        state.isLoading = false;
+        state.error = aciton.payload as string;
       });
   },
 });

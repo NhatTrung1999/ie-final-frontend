@@ -47,6 +47,10 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     }
   };
 
+  const handleSelectedItem = (item: any) => {
+    // const newTablect: ITableBody
+  };
+
   return (
     <>
       <Div
@@ -81,11 +85,12 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
               className={`${
                 item.id === activeItemId ? 'bg-white' : ''
               } hover:bg-gray-200 px-3 py-1 flex flex-row justify-between items-center cursor-pointer`}
-              onClick={() =>
-                setActiveItemId(item.id === activeItemId ? null : item.id)
-              }
+              onClick={() => {
+                setActiveItemId(item.id === activeItemId ? null : item.id);
+                handleSelectedItem(item);
+              }}
             >
-              <Div className="text-lg font-medium">{item.name}</Div>
+              <Div className="text-lg font-medium">{item.video_name}</Div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
