@@ -124,3 +124,19 @@ export interface ITablectPayload {
   confirm: string;
   created_at: Date;
 }
+
+export interface IGroupTablect {
+  id: number;
+  no: string;
+  progress_stage_part_name: string;
+  confirm: string;
+  created_at: string;
+  nva: {
+    average: number;
+    cts: number[];
+  } | null;
+  va: {
+    average: number;
+    cts: number[];
+  } | null;
+}

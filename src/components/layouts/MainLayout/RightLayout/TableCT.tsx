@@ -3,6 +3,7 @@ import type { ITablectHeader } from '../../../../types';
 import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppSelector } from '../../../../app/hooks';
+import { groupTablect } from '../../../../utils/groupTablect';
 
 const header: ITablectHeader[] = [
   {
@@ -24,6 +25,9 @@ const TableCT = ({
   tableCtWidth: number;
 }) => {
   const { data } = useAppSelector((state) => state.tablect);
+
+  console.log(groupTablect(data));
+
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
