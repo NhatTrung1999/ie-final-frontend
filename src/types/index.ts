@@ -102,27 +102,21 @@ export interface ITablectHeader {
   action: string;
 }
 
-export interface ITablectResponse {
-  id: number;
+export interface ITablectData {
   id_video: number;
   no: string;
   progress_stage_part_name: string;
-  type: string;
-  cts: number[];
-  average: number;
+  nva: {
+    type: string;
+    cts: number[];
+    average: number;
+  };
+  va: {
+    type: string;
+    cts: number[];
+    average: number;
+  };
   confirm: string;
-  created_at: string;
-}
-
-export interface ITablectPayload {
-  id_video: number;
-  no: string;
-  progress_stage_part_name: string;
-  type: string;
-  cts: number[];
-  average: number;
-  confirm: string;
-  created_at: Date;
 }
 
 export interface IGroupTablect {
@@ -132,10 +126,12 @@ export interface IGroupTablect {
   confirm: string;
   created_at: string;
   nva: {
+    type: string;
     average: number;
     cts: number[];
   } | null;
   va: {
+    type: string;
     average: number;
     cts: number[];
   } | null;

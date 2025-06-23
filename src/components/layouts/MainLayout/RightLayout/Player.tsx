@@ -1,12 +1,14 @@
 import ReactPlayer from 'react-player';
 import { Div } from '../../../ui';
-import url from '../../../../assets/video/C1. Mantra.mp4';
+import { useAppSelector } from '../../../../app/hooks';
 
 const Player = ({ playerHeight }: { playerHeight: number }) => {
+  const { videoPath } = useAppSelector((state) => state.area);
+
   return (
     <Div className="bg-black" style={{ height: playerHeight }}>
       <ReactPlayer
-        url={url}
+        url={videoPath}
         style={{ objectFit: 'contain' }}
         width={'100%'}
         height={playerHeight}

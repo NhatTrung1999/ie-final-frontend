@@ -1,7 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { CardHeader, Modal } from '../../../common';
 import { Div } from '../../../ui';
-import { useAppSelector } from '../../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+  setVideoPath,
+  type IDataArea,
+} from '../../../../features/area/areaSlice';
+import type { ITablectData } from '../../../../types';
+import { setTablectData } from '../../../../features/tablect/tablectSlice';
 
 const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -13,6 +19,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const [activeItemId, setActiveItemId] = useState<number | null>(null);
 
   const { area } = useAppSelector((state) => state.area);
+
+  const dispatch = useAppDispatch();
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement | null>) => {
     isDragging.current = true;
@@ -47,8 +55,29 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     }
   };
 
-  const handleSelectedItem = (item: any) => {
+  const handleSelectedItem = (item: IDataArea) => {
     // const newTablect: ITableBody
+    console.log(item);
+
+    const newTablectData: ITablectData = {
+      id_video: item.id,
+      no: item.video_name.split('. ')[0] || 'Unknow',
+      progress_stage_part_name: item.video_name.split('. ')[1] || 'Unknow',
+      nva: {
+        type: 'NVA',
+        cts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        average: 0,
+      },
+      va: {
+        type: 'VA',
+        cts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        average: 0,
+      },
+      confirm: '',
+    };
+
+    dispatch(setTablectData(newTablectData));
+    dispatch(setVideoPath(item.video_path));
   };
 
   return (

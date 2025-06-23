@@ -1,58 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { ITablectResponse } from '../../types';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { ITablectData } from '../../types';
 
 interface ITablectState {
-  data: ITablectResponse[];
+  data: ITablectData[];
   isLoading: boolean;
   error: string | null;
 }
 const initialState: ITablectState = {
-  data: [
-    {
-      id: 8,
-      id_video: 31,
-      no: 'C1',
-      progress_stage_part_name: 'Mantra',
-      type: 'nva',
-      cts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      average: 6,
-      confirm: '26324',
-      created_at: '2025-06-21T17:00:00.000Z',
-    },
-    {
-      id: 9,
-      id_video: 31,
-      no: 'C1',
-      progress_stage_part_name: 'Mantra',
-      type: 'va',
-      cts: [2, 3, 5, 6, 8, 3, 7, 5, 7, 10],
-      average: 4,
-      confirm: '26324',
-      created_at: '2025-06-21T17:00:00.000Z',
-    },
-    {
-      id: 10,
-      id_video: 32,
-      no: 'C2',
-      progress_stage_part_name: 'APT',
-      type: 'nva',
-      cts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      average: 13,
-      confirm: '20133',
-      created_at: '2025-06-22T17:00:00.000Z',
-    },
-    {
-      id: 11,
-      id_video: 32,
-      no: 'C2',
-      progress_stage_part_name: 'APT',
-      type: 'va',
-      cts: [2, 3, 5, 6, 8, 3, 7, 5, 7, 10],
-      average: 5,
-      confirm: '20133',
-      created_at: '2025-06-22T17:00:00.000Z',
-    },
-  ],
+  data: [],
   isLoading: false,
   error: null,
 };
@@ -60,7 +15,13 @@ const initialState: ITablectState = {
 export const tablectSlice = createSlice({
   name: 'tablect',
   initialState,
-  reducers: {},
+  reducers: {
+    setTablectData: (state, action: PayloadAction<ITablectData>) => {
+      state.data.push(action.payload);
+    },
+  },
 });
+
+export const { setTablectData } = tablectSlice.actions;
 
 export default tablectSlice.reducer;

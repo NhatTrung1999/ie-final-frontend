@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import type { ITablectHeader } from '../../../../types';
 import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppSelector } from '../../../../app/hooks';
-import { groupTablect } from '../../../../utils/groupTablect';
 
 const header: ITablectHeader[] = [
   {
@@ -25,9 +24,6 @@ const TableCT = ({
   tableCtWidth: number;
 }) => {
   const { data } = useAppSelector((state) => state.tablect);
-
-  console.log(groupTablect(data));
-
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
@@ -70,25 +66,40 @@ const TableCT = ({
           </thead>
           <tbody>
             {data.map((item) => (
-              <tr>
-                <td className="border text-center border-l-0">{item.no}</td>
-                <td className="border text-center">
-                  {item.progress_stage_part_name}
-                </td>
-                <td className="border text-center">{item.type}</td>
-                {item.cts.map((ct, index) => (
-                  <td key={index} className="border text-center">
-                    {ct}
+              <Fragment key={item.id_video}>
+                <tr>
+                  <td className="border text-center border-l-0" rowSpan={2}>
+                    {item.no}
                   </td>
-                ))}
-                <td className="border text-center">{item.average}</td>
-                <td className="border text-center">{item.confirm}</td>
-                <td className="border text-center border-r-0">
-                  <Button className="bg-green-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium">
-                    Save
-                  </Button>
-                </td>
-              </tr>
+                  <td className="border text-center" rowSpan={2}>
+                    {item.progress_stage_part_name}
+                  </td>
+                  <td className="border text-center">{item.nva?.type}</td>
+                  {item.nva?.cts.map((ct, index) => (
+                    <td key={index} className="border text-center">
+                      {ct}
+                    </td>
+                  ))}
+                  <td className="border text-center">{item.nva?.average}</td>
+                  <td className="border text-center" rowSpan={2}>
+                    {item.confirm}
+                  </td>
+                  <td className="border text-center border-r-0" rowSpan={2}>
+                    <Button className="bg-green-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium">
+                      Save
+                    </Button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border text-center">{item.va?.type}</td>
+                  {item.va?.cts.map((ct, index) => (
+                    <td key={index} className="border text-center">
+                      {ct}
+                    </td>
+                  ))}
+                  <td className="border text-center">{item.va?.average}</td>
+                </tr>
+              </Fragment>
             ))}
           </tbody>
         </table>
