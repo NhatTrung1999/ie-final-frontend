@@ -5,7 +5,7 @@ interface InputProps {
   className?: string;
   placeholder?: string;
   type?: string;
-  value?: string;
+  value?: any;
   id?: string;
   autoComplete?: string;
   ariaInvalid?: boolean | 'true' | 'false' | 'grammar' | 'spelling' | undefined;

@@ -19,6 +19,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const [activeItemId, setActiveItemId] = useState<number | null>(null);
 
   const { area } = useAppSelector((state) => state.area);
+  const { tablect } = useAppSelector((state) => state.tablect);
 
   const dispatch = useAppDispatch();
 
@@ -57,7 +58,10 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
 
   const handleSelectedItem = (item: IDataArea) => {
     // const newTablect: ITableBody
-    console.log(item);
+    const isDuplicate = tablect.some((row) => row.id_video === item.id);
+    if (isDuplicate) {
+      return;
+    }
 
     const newTablectData: ITablectData = {
       id_video: item.id,

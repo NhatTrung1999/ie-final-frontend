@@ -3,6 +3,7 @@ import authReducer from '../features/auth/authSlice';
 import videoReducer from '../features/video/videoSlice';
 import areaReducer from '../features/area/areaSlice';
 import tablectReducer from '../features/tablect/tablectSlice';
+import ctrlpanelReducer from '../features/ctrlpanel/ctrlpanelSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     video: videoReducer,
     area: areaReducer,
     tablect: tablectReducer,
+    ctrlpanel: ctrlpanelReducer,
   },
 });
 

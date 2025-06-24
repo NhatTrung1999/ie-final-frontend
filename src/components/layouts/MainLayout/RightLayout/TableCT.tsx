@@ -23,7 +23,7 @@ const TableCT = ({
   tableCtHeight: number;
   tableCtWidth: number;
 }) => {
-  const { data } = useAppSelector((state) => state.tablect);
+  const { tablect } = useAppSelector((state) => state.tablect);
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
@@ -65,7 +65,7 @@ const TableCT = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
+            {tablect.map((item) => (
               <Fragment key={item.id_video}>
                 <tr>
                   <td className="border text-center border-l-0" rowSpan={2}>

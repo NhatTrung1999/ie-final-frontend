@@ -2,12 +2,12 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { ITablectData } from '../../types';
 
 interface ITablectState {
-  data: ITablectData[];
+  tablect: ITablectData[];
   isLoading: boolean;
   error: string | null;
 }
 const initialState: ITablectState = {
-  data: [],
+  tablect: [],
   isLoading: false,
   error: null,
 };
@@ -17,7 +17,7 @@ export const tablectSlice = createSlice({
   initialState,
   reducers: {
     setTablectData: (state, action: PayloadAction<ITablectData>) => {
-      state.data.push(action.payload);
+      state.tablect.push(action.payload);
     },
   },
 });
