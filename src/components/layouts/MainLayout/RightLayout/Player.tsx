@@ -5,16 +5,19 @@ import {
   setCurrentTime,
   setDuration,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
+import { usePlayer } from '../../../../hooks/usePlayer';
 
 const Player = ({ playerHeight }: { playerHeight: number }) => {
   const { videoPath } = useAppSelector((state) => state.area);
   const { isPlaying } = useAppSelector((state) => state.ctrlpanel);
+  const { playerRef } = usePlayer();
 
   const dispatch = useAppDispatch();
 
   return (
     <Div className="bg-black" style={{ height: playerHeight }}>
       <ReactPlayer
+        ref={playerRef}
         url={videoPath}
         playing={isPlaying}
         style={{ objectFit: 'contain' }}

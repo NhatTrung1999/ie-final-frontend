@@ -1,9 +1,9 @@
-import type { Ref, RefObject } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   setCurrentTime,
   setIsPlaying,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
+import { usePlayer } from '../../../../hooks/usePlayer';
 import { formatTime } from '../../../../utils/formatTime';
 import { CardHeader } from '../../../common';
 import { Button, Div, Input } from '../../../ui';
@@ -14,6 +14,7 @@ const ControlPanel = ({
 }: {
   controlPanelHeight: number;
 }) => {
+  const { playerRef } = usePlayer();
   const { duration, isPlaying, currentTime } = useAppSelector(
     (state) => state.ctrlpanel
   );
@@ -26,6 +27,10 @@ const ControlPanel = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = Number(e.target.value);
+    dispatch(setCurrentTime(time));
+    if (playerRef.current) {
+      playerRef.current.seekTo(time, 'seconds');
+    }
   };
 
   return (
