@@ -29,7 +29,7 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         onProgress={(state: { playedSeconds: number }) =>
           dispatch(setCurrentTime(state.playedSeconds))
         }
-        progressInterval={100}
+        progressInterval={10}
       />
     </Div>
   );

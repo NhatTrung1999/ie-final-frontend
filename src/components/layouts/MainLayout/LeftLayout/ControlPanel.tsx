@@ -2,6 +2,10 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   setCurrentTime,
   setIsPlaying,
+  setLastElapsedTime,
+  setStartTime,
+  setStopTime,
+  setTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import { usePlayer } from '../../../../hooks/usePlayer';
 import { formatTime } from '../../../../utils/formatTime';
@@ -15,22 +19,42 @@ const ControlPanel = ({
   controlPanelHeight: number;
 }) => {
   const { playerRef } = usePlayer();
-  const { duration, isPlaying, currentTime } = useAppSelector(
-    (state) => state.ctrlpanel
-  );
+  const {
+    duration,
+    isPlaying,
+    currentTime,
+    startTime,
+    types,
+    lastElapsedTime,
+  } = useAppSelector((state) => state.ctrlpanel);
   const dispatch = useAppDispatch();
 
   const handleStartStop = () => {
-    // console.log(123);
-    dispatch(setIsPlaying(!isPlaying));
+    if (!isPlaying) {
+      dispatch(setStartTime(currentTime));
+      console.log('Start time:', currentTime);
+      dispatch(setIsPlaying(true));
+    } else {
+      dispatch(setStopTime(currentTime));
+      const elapsedTime = currentTime - startTime;
+      dispatch(setLastElapsedTime(elapsedTime));
+      console.log('Stop time: ', currentTime);
+      dispatch(setIsPlaying(false));
+    }
+    // dispatch(setIsPlaying(!isPlaying));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = Number(e.target.value);
-    dispatch(setCurrentTime(time));
+    const newTime = Number(e.target.value);
+    dispatch(setCurrentTime(newTime));
     if (playerRef.current) {
-      playerRef.current.seekTo(time, 'seconds');
+      playerRef.current.seekTo(newTime, 'seconds');
     }
+  };
+
+  const handleTypesClick = (type: 'NVA' | 'VA' | 'SKIP') => {
+    console.log(type);
+    dispatch(setTypes({ type, time: lastElapsedTime }));
   };
 
   return (
@@ -69,17 +93,32 @@ const ControlPanel = ({
           </Button>
         </Div>
         <Div className="flex-1 flex items-center gap-1">
-          <Button className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center">
+          <Button
+            handleClick={() => handleTypesClick('NVA')}
+            className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
+          >
             <Div className="flex-1">NVA</Div>
-            <Div className="bg-white flex-1 rounded-md text-black">0</Div>
+            <Div className="bg-white flex-1 rounded-md text-black">
+              {types.NVA}
+            </Div>
           </Button>
-          <Button className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center">
+          <Button
+            handleClick={() => handleTypesClick('VA')}
+            className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
+          >
             <Div className="flex-1">VA</Div>
-            <Div className="bg-white flex-1 rounded-md text-black">0</Div>
+            <Div className="bg-white flex-1 rounded-md text-black">
+              {types.VA}
+            </Div>
           </Button>
-          <Button className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center">
+          <Button
+            handleClick={() => handleTypesClick('SKIP')}
+            className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
+          >
             <Div className="flex-1">SKIP</Div>
-            <Div className="bg-white flex-1 rounded-md text-black">0</Div>
+            <Div className="bg-white flex-1 rounded-md text-black">
+              {types.SKIP}
+            </Div>
           </Button>
         </Div>
         <Div className=" flex-1 flex items-center bg-gray-400 gap-3 px-3 rounded-md">
