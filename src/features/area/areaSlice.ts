@@ -22,6 +22,7 @@ interface IArea {
 interface IAreaState {
   area: IArea[];
   videoPath: string;
+  activeItemId: number | null;
 }
 
 const initialState: IAreaState = {
@@ -49,6 +50,7 @@ const initialState: IAreaState = {
     { id: 4, name: 'NOSEW', data: [] },
   ],
   videoPath: '',
+  activeItemId: null,
 };
 
 const areaSlice = createSlice({
@@ -71,9 +73,12 @@ const areaSlice = createSlice({
     setVideoPath: (state, action: PayloadAction<string>) => {
       state.videoPath = action.payload;
     },
+    setActiveItemId: (state, action: PayloadAction<number | null>) => {
+      state.activeItemId = action.payload;
+    },
   },
 });
 
-export const { setAreaData, setVideoPath } = areaSlice.actions;
+export const { setAreaData, setVideoPath, setActiveItemId } = areaSlice.actions;
 
 export default areaSlice.reducer;

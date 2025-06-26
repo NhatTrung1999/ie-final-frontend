@@ -27,18 +27,19 @@ const ControlPanel = ({
     types,
     lastElapsedTime,
   } = useAppSelector((state) => state.ctrlpanel);
+  const { tablect, activeColId } = useAppSelector((state) => state.tablect);
   const dispatch = useAppDispatch();
 
   const handleStartStop = () => {
     if (!isPlaying) {
       dispatch(setStartTime(currentTime));
-      console.log('Start time:', currentTime);
+      // console.log('Start time:', currentTime);
       dispatch(setIsPlaying(true));
     } else {
       dispatch(setStopTime(currentTime));
       const elapsedTime = currentTime - startTime;
       dispatch(setLastElapsedTime(elapsedTime));
-      console.log('Stop time: ', currentTime);
+      // console.log('Stop time: ', currentTime);
       dispatch(setIsPlaying(false));
     }
     // dispatch(setIsPlaying(!isPlaying));
@@ -52,9 +53,13 @@ const ControlPanel = ({
     }
   };
 
-  const handleTypesClick = (type: 'NVA' | 'VA' | 'SKIP') => {
-    console.log(type);
+  const handleClickTypes = (type: 'NVA' | 'VA' | 'SKIP') => {
+    // console.log(tablect);
     dispatch(setTypes({ type, time: lastElapsedTime }));
+  };
+
+  const handleClickDone = () => {
+    console.log(123);
   };
 
   return (
@@ -69,6 +74,7 @@ const ControlPanel = ({
             {formatTime(currentTime)}
           </Div>
           <Button
+            disabled={!activeColId}
             type="button"
             handleClick={handleStartStop}
             className={`${
@@ -87,14 +93,19 @@ const ControlPanel = ({
               </>
             )}
           </Button>
-          <Button className="bg-green-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex items-center justify-center gap-2">
+          <Button
+            handleClick={handleClickDone}
+            disabled={!activeColId}
+            className="bg-green-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex items-center justify-center gap-2"
+          >
             <FaCheck />
             Done
           </Button>
         </Div>
         <Div className="flex-1 flex items-center gap-1">
           <Button
-            handleClick={() => handleTypesClick('NVA')}
+            disabled={!activeColId}
+            handleClick={() => handleClickTypes('NVA')}
             className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
           >
             <Div className="flex-1">NVA</Div>
@@ -103,7 +114,8 @@ const ControlPanel = ({
             </Div>
           </Button>
           <Button
-            handleClick={() => handleTypesClick('VA')}
+            disabled={!activeColId}
+            handleClick={() => handleClickTypes('VA')}
             className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
           >
             <Div className="flex-1">VA</Div>
@@ -112,7 +124,8 @@ const ControlPanel = ({
             </Div>
           </Button>
           <Button
-            handleClick={() => handleTypesClick('SKIP')}
+            disabled={!activeColId}
+            handleClick={() => handleClickTypes('SKIP')}
             className="bg-gray-500 cursor-pointer flex-1 p-1 rounded-md text-lg font-semibold text-white flex gap-1 items-center"
           >
             <Div className="flex-1">SKIP</Div>
@@ -130,7 +143,7 @@ const ControlPanel = ({
             className="flex-1 accent-amber-50 bg-white"
             style={{ padding: 0 }}
             value={currentTime}
-            {...{ max: duration, step: 0.01 }}
+            {...{ max: duration, step: 0.01, disabled: !activeColId }}
             onChange={handleChange}
           />
           <Div className="text-lg font-semibold text-white">

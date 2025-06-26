@@ -2,7 +2,9 @@ import React, { Fragment } from 'react';
 import type { ITablectHeader } from '../../../../types';
 import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
-import { useAppSelector } from '../../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { setActiveItemId } from '../../../../features/area/areaSlice';
+import { setActiveColId } from '../../../../features/tablect/tablectSlice';
 
 const header: ITablectHeader[] = [
   {
@@ -23,7 +25,19 @@ const TableCT = ({
   tableCtHeight: number;
   tableCtWidth: number;
 }) => {
-  const { tablect } = useAppSelector((state) => state.tablect);
+  const { tablect, activeColId } = useAppSelector((state) => state.tablect);
+  const { activeItemId } = useAppSelector((state) => state.area);
+  const dispatch = useAppDispatch();
+
+  const handleColumnClick = (
+    e: React.MouseEvent<HTMLTableCellElement>,
+    colId: string | null
+  ) => {
+    e.stopPropagation();
+    // console.log(colId);
+    dispatch(setActiveColId(colId));
+  };
+
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
@@ -67,7 +81,18 @@ const TableCT = ({
           <tbody>
             {tablect.map((item) => (
               <Fragment key={item.id_video}>
-                <tr>
+                <tr
+                  className={`${
+                    activeItemId === item.id_video ? 'bg-gray-400' : ''
+                  } cursor-pointer`}
+                  onClick={() =>
+                    dispatch(
+                      setActiveItemId(
+                        item.id_video === activeItemId ? null : item.id_video
+                      )
+                    )
+                  }
+                >
                   <td className="border text-center border-l-0" rowSpan={2}>
                     {item.no}
                   </td>
@@ -76,7 +101,22 @@ const TableCT = ({
                   </td>
                   <td className="border text-center">{item.nva?.type}</td>
                   {item.nva?.cts.map((ct, index) => (
-                    <td key={index} className="border text-center">
+                    <td
+                      key={index}
+                      onClick={(e) =>
+                        handleColumnClick(
+                          e,
+                          `${item.id_video}-${index}` === activeColId
+                            ? null
+                            : `${item.id_video}-${index}`
+                        )
+                      }
+                      className={`border text-center ${
+                        activeColId === `${item.id_video}-${index}`
+                          ? 'bg-yellow-200'
+                          : ''
+                      }`}
+                    >
                       {ct}
                     </td>
                   ))}
@@ -90,10 +130,36 @@ const TableCT = ({
                     </Button>
                   </td>
                 </tr>
-                <tr>
+                <tr
+                  className={`${
+                    activeItemId === item.id_video ? 'bg-gray-400' : ''
+                  } cursor-pointer`}
+                  onClick={() =>
+                    dispatch(
+                      setActiveItemId(
+                        item.id_video === activeItemId ? null : item.id_video
+                      )
+                    )
+                  }
+                >
                   <td className="border text-center">{item.va?.type}</td>
                   {item.va?.cts.map((ct, index) => (
-                    <td key={index} className="border text-center">
+                    <td
+                      key={index}
+                      onClick={(e) =>
+                        handleColumnClick(
+                          e,
+                          `${item.id_video}-${index}` === activeColId
+                            ? null
+                            : `${item.id_video}-${index}`
+                        )
+                      }
+                      className={`border text-center ${
+                        activeColId === `${item.id_video}-${index}`
+                          ? 'bg-yellow-200'
+                          : ''
+                      }`}
+                    >
                       {ct}
                     </td>
                   ))}

@@ -3,6 +3,7 @@ import { CardHeader, Modal } from '../../../common';
 import { Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
+  setActiveItemId,
   setVideoPath,
   type IDataArea,
 } from '../../../../features/area/areaSlice';
@@ -16,9 +17,9 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollLeftStart = useRef<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [activeId, setActiveId] = useState<number>(0);
-  const [activeItemId, setActiveItemId] = useState<number | null>(null);
+  // const [activeItemId, setActiveItemId] = useState<number | null>(null);
 
-  const { area } = useAppSelector((state) => state.area);
+  const { area, activeItemId } = useAppSelector((state) => state.area);
   const { tablect } = useAppSelector((state) => state.tablect);
 
   const dispatch = useAppDispatch();
@@ -119,7 +120,10 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 item.id === activeItemId ? 'bg-white' : ''
               } hover:bg-gray-200 px-3 py-1 flex flex-row justify-between items-center cursor-pointer`}
               onClick={() => {
-                setActiveItemId(item.id === activeItemId ? null : item.id);
+                console.log(item.id);
+                dispatch(
+                  setActiveItemId(item.id === activeItemId ? null : item.id)
+                );
                 handleSelectedItem(item);
               }}
             >
