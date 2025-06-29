@@ -3,8 +3,8 @@ import type { ITablectHeader } from '../../../../types';
 import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { setActiveItemId } from '../../../../features/area/areaSlice';
 import { setActiveColId } from '../../../../features/tablect/tablectSlice';
+import { setActiveItemId } from '../../../../features/stagelist/stagelistSlice';
 
 const header: ITablectHeader[] = [
   {
@@ -26,7 +26,7 @@ const TableCT = ({
   tableCtWidth: number;
 }) => {
   const { tablect, activeColId } = useAppSelector((state) => state.tablect);
-  const { activeItemId } = useAppSelector((state) => state.area);
+  const { activeItemId } = useAppSelector((state) => state.stagelist);
   const dispatch = useAppDispatch();
 
   const handleColumnClick = (

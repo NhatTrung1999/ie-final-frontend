@@ -15,7 +15,7 @@ export interface ICommonProps<T = unknown> {
   onMouseMove?: (e: React.MouseEvent<T>) => void;
   onMouseUp?: (e: React.MouseEvent<T>) => void;
   onMouseLeave?: (e: React.MouseEvent<T>) => void;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<T>) => void;
 }
 
 export interface LoginPayload {
@@ -119,20 +119,12 @@ export interface ITablectData {
   confirm: string;
 }
 
-export interface IGroupTablect {
-  id: number;
-  no: string;
-  progress_stage_part_name: string;
-  confirm: string;
+export interface IHistoryPlayback {
+  id_historyplayback: string;
+  id_tablect: number | null;
+  start_time: number;
+  end_time: number;
+  type: string;
+  created_by: string;
   created_at: string;
-  nva: {
-    type: string;
-    average: number;
-    cts: number[];
-  } | null;
-  va: {
-    type: string;
-    average: number;
-    cts: number[];
-  } | null;
 }

@@ -7,7 +7,7 @@ interface ICtrlPanelState {
   startTime: number;
   stopTime: number;
   lastElapsedTime: number;
-  types: { [key in 'NVA' | 'VA' | 'SKIP']: number };
+  types: { [key in string]: number };
 }
 
 const initialState: ICtrlPanelState = {
@@ -35,22 +35,28 @@ const ctrlpanelSlice = createSlice({
       state.duration = action.payload;
     },
     setCurrentTime: (state, action: PayloadAction<number>) => {
-      state.currentTime = Math.floor(action.payload);
+      state.currentTime = action.payload;
     },
     setStartTime: (state, action: PayloadAction<number>) => {
-      state.startTime = Math.floor(action.payload);
+      state.startTime = action.payload;
     },
     setStopTime: (state, action: PayloadAction<number>) => {
-      state.stopTime = Math.floor(action.payload);
+      state.stopTime = action.payload;
     },
     setLastElapsedTime: (state, action: PayloadAction<number>) => {
-      state.lastElapsedTime = Math.floor(action.payload);
+      state.lastElapsedTime = action.payload;
     },
     setTypes: (
       state,
-      action: PayloadAction<{ type: 'NVA' | 'VA' | 'SKIP'; time: number }>
+      action: PayloadAction<{ type: string; time: number }>
     ) => {
       state.types[action.payload.type] += Math.floor(action.payload.time);
+    },
+    setDiffTypes: (
+      state,
+      action: PayloadAction<{ type: string; time: number }>
+    ) => {
+      state.types[action.payload.type] -= Math.floor(action.payload.time);
     },
   },
 });
@@ -63,6 +69,7 @@ export const {
   setStopTime,
   setLastElapsedTime,
   setTypes,
+  setDiffTypes,
 } = ctrlpanelSlice.actions;
 
 export default ctrlpanelSlice.reducer;

@@ -1,8 +1,9 @@
+import type React from 'react';
 import type { ICommonProps } from '../../types';
 
 interface IButtonProps extends ICommonProps {
   type?: 'submit' | 'reset' | 'button' | undefined;
-  handleClick?: () => void;
+  handleClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
 }
 

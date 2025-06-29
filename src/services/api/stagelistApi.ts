@@ -1,6 +1,7 @@
+import type { IVideoResponse } from '../../types';
 import axiosConfig from '../axiosConfig';
 
-const videoApi = {
+const stagelistApi = {
   uploadVideo: async (
     payload: FormData,
     signal?: AbortSignal,
@@ -25,6 +26,17 @@ const videoApi = {
       throw error;
     }
   },
+  getVideo: async (): Promise<IVideoResponse[]> => {
+    const response = await axiosConfig.get('/video');
+    return response.data.data;
+  },
+  deleteVideo: async (id: number): Promise<void> => {
+    try {
+      await axiosConfig.delete(`/video/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
-export default videoApi;
+export default stagelistApi;

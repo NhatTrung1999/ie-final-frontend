@@ -7,7 +7,9 @@ import {
   setStopTime,
   setTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
+import { setHistoryPlayback } from '../../../../features/historyplayback/historyPlaybackSlice';
 import { usePlayer } from '../../../../hooks/usePlayer';
+import type { IHistoryPlayback } from '../../../../types';
 import { formatTime } from '../../../../utils/formatTime';
 import { CardHeader } from '../../../common';
 import { Button, Div, Input } from '../../../ui';
@@ -28,6 +30,9 @@ const ControlPanel = ({
     lastElapsedTime,
   } = useAppSelector((state) => state.ctrlpanel);
   const { tablect, activeColId } = useAppSelector((state) => state.tablect);
+  const { activeItemId } = useAppSelector((state) => state.stagelist);
+  const { history_playback } = useAppSelector((state) => state.historyPlayback);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const handleStartStop = () => {
@@ -54,8 +59,18 @@ const ControlPanel = ({
   };
 
   const handleClickTypes = (type: 'NVA' | 'VA' | 'SKIP') => {
-    // console.log(tablect);
+    // console.log(activeItemId);
+    const newHistoryPlayback: IHistoryPlayback = {
+      id_historyplayback: `${activeItemId}${history_playback.length}`,
+      id_tablect: activeItemId,
+      start_time: startTime,
+      end_time: currentTime,
+      type,
+      created_by: user?.account || 'unknown',
+      created_at: new Date().toISOString(),
+    };
     dispatch(setTypes({ type, time: lastElapsedTime }));
+    dispatch(setHistoryPlayback(newHistoryPlayback));
   };
 
   const handleClickDone = () => {

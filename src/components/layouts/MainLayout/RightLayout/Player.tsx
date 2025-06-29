@@ -8,7 +8,7 @@ import {
 import { usePlayer } from '../../../../hooks/usePlayer';
 
 const Player = ({ playerHeight }: { playerHeight: number }) => {
-  const { videoPath } = useAppSelector((state) => state.area);
+  const { videoPath } = useAppSelector((state) => state.stagelist);
   const { isPlaying } = useAppSelector((state) => state.ctrlpanel);
   const { playerRef } = usePlayer();
 
