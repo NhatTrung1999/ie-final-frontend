@@ -4,12 +4,12 @@ import axios, {
 } from 'axios';
 
 const axiosConfig = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://192.168.18.42:3000/api/v1',
   // baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:6868/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 3600000,
 });
 
 // Request interceptor

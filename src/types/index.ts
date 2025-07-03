@@ -106,6 +106,7 @@ export interface ITablectData {
   id_video: number;
   no: string;
   progress_stage_part_name: string;
+  area: string;
   nva: {
     type: string;
     cts: number[];
@@ -117,6 +118,7 @@ export interface ITablectData {
     average: number;
   };
   confirm: string;
+  video_path?: string
 }
 
 export interface IHistoryPlayback {

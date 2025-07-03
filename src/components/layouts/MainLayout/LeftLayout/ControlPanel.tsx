@@ -3,11 +3,13 @@ import {
   setCurrentTime,
   setIsPlaying,
   setLastElapsedTime,
+  setResetTypes,
   setStartTime,
   setStopTime,
   setTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import { setHistoryPlayback } from '../../../../features/historyplayback/historyPlaybackSlice';
+import { setUpdateTablect } from '../../../../features/tablect/tablectSlice';
 import { usePlayer } from '../../../../hooks/usePlayer';
 import type { IHistoryPlayback } from '../../../../types';
 import { formatTime } from '../../../../utils/formatTime';
@@ -29,25 +31,25 @@ const ControlPanel = ({
     types,
     lastElapsedTime,
   } = useAppSelector((state) => state.ctrlpanel);
-  const { tablect, activeColId } = useAppSelector((state) => state.tablect);
+  const { activeColId } = useAppSelector((state) => state.tablect);
   const { activeItemId } = useAppSelector((state) => state.stagelist);
   const { history_playback } = useAppSelector((state) => state.historyPlayback);
   const { user } = useAppSelector((state) => state.auth);
+
   const dispatch = useAppDispatch();
 
   const handleStartStop = () => {
     if (!isPlaying) {
       dispatch(setStartTime(currentTime));
-      // console.log('Start time:', currentTime);
       dispatch(setIsPlaying(true));
+      // console.log('startTime: ', startTime);
     } else {
+      // console.log('endTime', currentTime);
       dispatch(setStopTime(currentTime));
       const elapsedTime = currentTime - startTime;
       dispatch(setLastElapsedTime(elapsedTime));
-      // console.log('Stop time: ', currentTime);
       dispatch(setIsPlaying(false));
     }
-    // dispatch(setIsPlaying(!isPlaying));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +76,18 @@ const ControlPanel = ({
   };
 
   const handleClickDone = () => {
-    console.log(123);
+    if (activeColId && activeItemId) {
+      const [id_video, col_index] = activeColId.split('-').map(Number);
+      dispatch(
+        setUpdateTablect({
+          id_video,
+          col_index,
+          nva_time: types.NVA,
+          va_time: types.VA,
+        })
+      );
+    }
+    dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
   };
 
   return (

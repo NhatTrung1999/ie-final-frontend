@@ -6,11 +6,13 @@ const CardHeader = ({
   isShowIcon = false,
   isShowButton = false,
   setIsOpen,
+  handleConfirm
 }: {
   title: string;
   isShowIcon?: boolean;
   isShowButton?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
+  handleConfirm?: () => void
 }) => {
   return (
     <Div className="bg-amber-400 flex justify-between items-center p-3 rounded-t-md">
@@ -33,7 +35,7 @@ const CardHeader = ({
       )}
       {isShowButton && (
         <Div className="flex items-center gap-2">
-          <Button className="bg-blue-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
+          <Button handleClick={handleConfirm} className="bg-blue-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
             Confirm
           </Button>
           <Button className="bg-green-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">

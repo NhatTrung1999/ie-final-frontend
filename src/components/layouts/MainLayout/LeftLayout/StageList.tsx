@@ -8,6 +8,7 @@ import { setTablectData } from '../../../../features/tablect/tablectSlice';
 import {
   deleteVideo,
   setActiveItemId,
+  setActiveTabId,
   setVideoPath,
   type IStageListData,
 } from '../../../../features/stagelist/stagelistSlice';
@@ -18,13 +19,13 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const startX = useRef<number>(0);
   const scrollLeftStart = useRef<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [activeId, setActiveId] = useState<number>(0);
-  // const [activeItemId, setActiveItemId] = useState<number | null>(null);
 
-  const { stagelist, activeItemId } = useAppSelector(
+  const { stagelist, activeItemId, activeTabId } = useAppSelector(
     (state) => state.stagelist
   );
   const { tablect } = useAppSelector((state) => state.tablect);
+
+  const stagelistItem = stagelist.filter((st) => st.name.toLowerCase() === activeTabId.toLowerCase())
 
   const dispatch = useAppDispatch();
 
@@ -65,13 +66,15 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     // const newTablect: ITableBody
     const isDuplicate = tablect.some((row) => row.id_video === item.id);
     if (isDuplicate) {
+      dispatch(setVideoPath(item.video_path))
       return;
     }
 
     const newTablectData: ITablectData = {
       id_video: item.id,
-      no: item.video_name.split('. ')[0] || 'Unknow',
-      progress_stage_part_name: item.video_name.split('. ')[1] || 'Unknow',
+      no: item.video_name.split('. ')[0] || 'Unknown',
+      progress_stage_part_name: item.video_name.split('. ')[1] || 'Unknown',
+      area: item.area,
       nva: {
         type: 'NVA',
         cts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -83,6 +86,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         average: 0,
       },
       confirm: '',
+      video_path: item.video_path || 'Unknown-video-path'
     };
 
     dispatch(setTablectData(newTablectData));
@@ -114,18 +118,18 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         >
           {stagelist.map((item) => (
             <Div
-              key={item.id}
+              key={item.name}
               className={`${
-                item.id === activeId ? 'bg-amber-200' : ''
+                item.name === activeTabId ? 'bg-amber-200' : ''
               } px-2 py-1 rounded-md font-semibold`}
-              onClick={() => setActiveId(item.id)}
+              onClick={() => dispatch(setActiveTabId(item.name))}
             >
               {item.name}
             </Div>
           ))}
         </Div>
         <Div className=" flex-1 overflow-y-auto bg-yellow-200 flex flex-col gap-1 rounded-b-md p-1">
-          {stagelist[activeId].data.map((item, index) => (
+          {stagelistItem[0].data.map((item, index) => (
             <Div
               key={index}
               className={`${

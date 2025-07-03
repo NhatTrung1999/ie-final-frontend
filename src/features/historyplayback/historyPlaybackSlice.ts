@@ -25,10 +25,15 @@ const historyPlaybackSlice = createSlice({
         (item) => item.id_historyplayback !== action.payload
       );
     },
+    deleteAllHistoryPlayback: (state, action: PayloadAction<number>) => {
+      state.history_playback = state.history_playback.filter(
+        (item) => item.id_tablect !== action.payload
+      );
+    },
   },
 });
 
-export const { setHistoryPlayback, deleteHistoryPlayback } =
+export const { setHistoryPlayback, deleteHistoryPlayback, deleteAllHistoryPlayback } =
   historyPlaybackSlice.actions;
 
 export default historyPlaybackSlice.reducer;

@@ -20,7 +20,6 @@ export interface IStageListData {
 }
 
 interface IStageList {
-  id: number;
   name: string;
   data: IStageListData[];
 }
@@ -30,45 +29,50 @@ interface IStageListState {
   isLoading: boolean;
   error: string | null;
   videoPath: string;
+  activeTabId: string;
   activeItemId: number | null;
+  formValues?: {
+    date: string;
+    season: string;
+    stage: string;
+    area: string;
+    article: string;
+  };
 }
 
 const initialState: IStageListState = {
   stagelist: [
     {
-      id: 0,
       name: 'CUTTING',
       data: [],
     },
     {
-      id: 1,
       name: 'STITCHING',
       data: [],
     },
     {
-      id: 2,
       name: 'ASSEMBLY',
       data: [],
     },
     {
-      id: 3,
       name: 'STOCKFITTING',
       data: [],
     },
-    { id: 4, name: 'NOSEW', data: [] },
+    { name: 'NOSEW', data: [] },
   ],
   isLoading: false,
   error: null,
   videoPath: '',
+  activeTabId: 'CUTTING',
   activeItemId: null,
+  formValues: {
+    date: new Date().toISOString().split('T')[0],
+    season: '',
+    stage: '',
+    area: 'CUTTING',
+    article: '',
+  },
 };
-
-export const cancelUpload = createAsyncThunk(
-  'stagelist/cancel-video',
-  async () => {
-    return null;
-  }
-);
 
 export const uploadVideo = createAsyncThunk(
   'stagelist/upload-video',
@@ -79,8 +83,7 @@ export const uploadVideo = createAsyncThunk(
     }: { payload: IFormPayload; onProgress?: (progress: number) => void },
     { rejectWithValue }
   ) => {
-    const { date, season, stage, area, article, video, created_by, signal } =
-      payload;
+    const { date, season, stage, area, article, video, created_by } = payload;
     const formData = new FormData();
 
     formData.append('date', date.trim());
@@ -98,7 +101,6 @@ export const uploadVideo = createAsyncThunk(
     try {
       const { message, data } = await stagelistApi.uploadVideo(
         formData,
-        signal,
         onProgress
       );
       // console.log(response);
@@ -143,8 +145,23 @@ const stagelistSlice = createSlice({
     setVideoPath: (state, action: PayloadAction<string>) => {
       state.videoPath = action.payload;
     },
+    setActiveTabId: (state, action: PayloadAction<string>) => {
+      state.activeTabId = action.payload;
+    },
     setActiveItemId: (state, action: PayloadAction<number | null>) => {
       state.activeItemId = action.payload;
+    },
+    setFormValues: (
+      state,
+      action: PayloadAction<{
+        date: string;
+        season: string;
+        stage: string;
+        area: string;
+        article: string;
+      }>
+    ) => {
+      state.formValues = { ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -217,6 +234,7 @@ const stagelistSlice = createSlice({
   },
 });
 
-export const { setVideoPath, setActiveItemId } = stagelistSlice.actions;
+export const { setVideoPath, setActiveTabId, setActiveItemId, setFormValues } =
+  stagelistSlice.actions;
 
 export default stagelistSlice.reducer;

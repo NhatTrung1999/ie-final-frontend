@@ -27,7 +27,7 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         muted
         onDuration={(duration: number) => dispatch(setDuration(duration))}
         onProgress={(state: { playedSeconds: number }) =>
-          dispatch(setCurrentTime(state.playedSeconds))
+          dispatch(setCurrentTime(Math.floor(state.playedSeconds)))
         }
         progressInterval={10}
       />
