@@ -3,7 +3,8 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type { ITablectData } from '../../types';
+import type { ITablectData, ITablectPayload } from '../../types';
+import tablectApi from '../../services/api/tablectApi';
 
 interface ITablectState {
   tablect: ITablectData[];
@@ -20,10 +21,28 @@ const initialState: ITablectState = {
 
 export const createTableCt = createAsyncThunk(
   'tablect/create-tablect',
-  async (payload: ITablectData[], { rejectWithValue }) => {
+  async (payload: ITablectPayload[], { rejectWithValue }) => {
     try {
-      console.log(payload);
+      await tablectApi.confirmTablect(payload);
+      return 'add success';
     } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getTablect = createAsyncThunk(
+  'tablect/get-tablect',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await tablectApi.getTablect();
+      const data = res.map((item) => ({
+        ...item,
+        nva: JSON.parse(item.nva),
+        va: JSON.parse(item.va),
+      }));
+      return data;
+    } catch (error) {
       return rejectWithValue(error);
     }
   }
@@ -85,6 +104,33 @@ export const tablectSlice = createSlice({
         (item) => item.id_video !== action.payload
       );
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createTableCt.pending, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(createTableCt.fulfilled, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(createTableCt.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+    builder
+      .addCase(getTablect.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getTablect.fulfilled, (state, action) => {
+        state.tablect = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(getTablect.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

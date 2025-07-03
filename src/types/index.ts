@@ -118,7 +118,17 @@ export interface ITablectData {
     average: number;
   };
   confirm: string;
-  video_path?: string
+  video_path?: string;
+}
+
+export interface ITablectPayload {
+  id_video: number;
+  no: string;
+  progress_stage_part_name: string;
+  area: string;
+  nva: string;
+  va: string;
+  confirm: string;
 }
 
 export interface IHistoryPlayback {

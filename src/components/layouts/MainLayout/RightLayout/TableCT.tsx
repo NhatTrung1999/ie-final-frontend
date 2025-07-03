@@ -1,11 +1,16 @@
-import React, { Fragment } from 'react';
-import type { ITablectData, ITablectHeader } from '../../../../types';
+import React, { Fragment, useEffect } from 'react';
+import type {
+  ITablectData,
+  ITablectHeader,
+  ITablectPayload,
+} from '../../../../types';
 import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   createTableCt,
   deleteTablect,
+  getTablect,
   setActiveColId,
   setUpdateTablect,
 } from '../../../../features/tablect/tablectSlice';
@@ -40,9 +45,18 @@ const TableCT = ({
     (state) => state.stagelist
   );
 
-  const {history_playback} = useAppSelector(state => state.historyPlayback)
-  const {user} = useAppSelector(state => state.auth)
+  const { history_playback } = useAppSelector((state) => state.historyPlayback);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const getTablects = async () => {
+      const response = await dispatch(getTablect());
+      return response;
+    };
+
+    getTablects();
+  }, [dispatch]);
 
   const handleColumnClick = (
     e: React.MouseEvent<HTMLTableCellElement>,
@@ -89,22 +103,23 @@ const TableCT = ({
     e: React.MouseEvent<HTMLButtonElement>,
     item: ITablectData
   ) => {
-    e.stopPropagation()
-    dispatch(deleteTablect(item.id_video))
-    dispatch(deleteAllHistoryPlayback(item.id_video))
+    e.stopPropagation();
+    dispatch(deleteTablect(item.id_video));
+    dispatch(deleteAllHistoryPlayback(item.id_video));
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     // console.log(history_playback, tablect);
+    const confirmTablect: ITablectPayload[] = tablect.map((item) => ({
+      ...item,
+      nva: JSON.stringify(item.nva),
+      va: JSON.stringify(item.va),
+      confirm: user?.account || '',
+    }));
 
-    // const confirmTablect = tablect.map((item) => ({
-    //   ...item, confirm: user?.account
-    // }))
-
-    // dispatch(createTableCt([...confirmTablect]))
-
-
-  }
+    await dispatch(createTableCt(confirmTablect));
+    await dispatch(getTablect());
+  };
 
   const hasAllCTValues = (item: ITablectData) => {
     return (
@@ -118,7 +133,11 @@ const TableCT = ({
       className="bg-white rounded-md flex flex-col overflow-x-auto"
       style={{ height: tableCtHeight }}
     >
-      <CardHeader title="Table CT" isShowButton={true} handleConfirm={handleConfirm} />
+      <CardHeader
+        title="Table CT"
+        isShowButton={true}
+        handleConfirm={handleConfirm}
+      />
       <Div
         className=" flex-1 overflow-x-auto"
         style={{ maxWidth: tableCtWidth - 24 }}
