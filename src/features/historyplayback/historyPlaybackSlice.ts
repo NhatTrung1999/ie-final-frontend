@@ -1,5 +1,10 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from '@reduxjs/toolkit';
 import type { IHistoryPlayback } from '../../types';
+import historyplaybackApi from '../../services/api/historyplaybackApi';
 
 interface IHistoryPlaybackState {
   history_playback: IHistoryPlayback[];
@@ -12,6 +17,30 @@ const initialState: IHistoryPlaybackState = {
   isLoading: false,
   error: null,
 };
+
+export const createHistoryPlayback = createAsyncThunk(
+  'historyplayback/create',
+  async (payload: IHistoryPlayback[], { rejectWithValue }) => {
+    try {
+      const data = await historyplaybackApi.createHistoryPlayback(payload);
+      console.log(data);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getHistoryPlayback = createAsyncThunk(
+  'historyplayback/get-historyplayback',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await historyplaybackApi.getHistoryPlayback();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const historyPlaybackSlice = createSlice({
   name: 'historyPlayback',
@@ -31,9 +60,26 @@ const historyPlaybackSlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getHistoryPlayback.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getHistoryPlayback.fulfilled, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(getHistoryPlayback.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+  },
 });
 
-export const { setHistoryPlayback, deleteHistoryPlayback, deleteAllHistoryPlayback } =
-  historyPlaybackSlice.actions;
+export const {
+  setHistoryPlayback,
+  deleteHistoryPlayback,
+  deleteAllHistoryPlayback,
+} = historyPlaybackSlice.actions;
 
 export default historyPlaybackSlice.reducer;

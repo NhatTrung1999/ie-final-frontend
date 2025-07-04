@@ -19,7 +19,11 @@ import {
   setVideoPath,
 } from '../../../../features/stagelist/stagelistSlice';
 import { toast } from 'react-toastify';
-import { deleteAllHistoryPlayback } from '../../../../features/historyplayback/historyPlaybackSlice';
+import {
+  createHistoryPlayback,
+  deleteAllHistoryPlayback,
+  getHistoryPlayback,
+} from '../../../../features/historyplayback/historyPlaybackSlice';
 
 const header: ITablectHeader[] = [
   {
@@ -109,16 +113,17 @@ const TableCT = ({
   };
 
   const handleConfirm = async () => {
-    // console.log(history_playback, tablect);
     const confirmTablect: ITablectPayload[] = tablect.map((item) => ({
       ...item,
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
       confirm: user?.account || '',
     }));
-
+    // console.log(history_playback, confirmTablect);
     await dispatch(createTableCt(confirmTablect));
+    await dispatch(createHistoryPlayback(history_playback));
     await dispatch(getTablect());
+    await dispatch(getHistoryPlayback());
   };
 
   const hasAllCTValues = (item: ITablectData) => {

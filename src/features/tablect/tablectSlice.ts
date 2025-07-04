@@ -107,25 +107,13 @@ export const tablectSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createTableCt.pending, (state) => {
-        state.isLoading = false;
-        state.error = null;
-      })
-      .addCase(createTableCt.fulfilled, (state, action) => {
-        console.log(action.payload);
-      })
-      .addCase(createTableCt.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
-    builder
       .addCase(getTablect.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
       .addCase(getTablect.fulfilled, (state, action) => {
         state.tablect = action.payload;
-        console.log(action.payload);
+        // console.log(action.payload);
       })
       .addCase(getTablect.rejected, (state, action) => {
         state.isLoading = false;
