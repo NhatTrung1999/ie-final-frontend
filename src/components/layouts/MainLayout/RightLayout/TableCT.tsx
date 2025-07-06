@@ -21,7 +21,6 @@ import {
 import { toast } from 'react-toastify';
 import {
   createHistoryPlayback,
-  deleteAllHistoryPlayback,
   getHistoryPlayback,
 } from '../../../../features/historyplayback/historyPlaybackSlice';
 
@@ -67,14 +66,27 @@ const TableCT = ({
     colId: string | null
   ) => {
     e.stopPropagation();
-    dispatch(setActiveColId(colId));
+    if (activeItemId && colId) {
+      const colRowId = colId.split('-')[0];
+      if (activeItemId === Number(colRowId)) {
+        if (colId === activeColId) {
+          dispatch(setActiveColId(null));
+        } else {
+          dispatch(setActiveColId(colId));
+        }
+      }
+    }
   };
 
   const handleRowClick = (item: ITablectData) => {
-    dispatch(setVideoPath(item.video_path as string));
-    dispatch(
-      setActiveItemId(item.id_video === activeItemId ? null : item.id_video)
-    );
+    if (activeItemId === item.id_video) {
+      dispatch(setVideoPath(''));
+      dispatch(setActiveItemId(null));
+      dispatch(setActiveColId(null));
+    } else {
+      dispatch(setVideoPath(item.video_path as string));
+      dispatch(setActiveItemId(item.id_video));
+    }
   };
 
   const handleSaveClick = (
@@ -82,6 +94,7 @@ const TableCT = ({
     item: ITablectData
   ) => {
     e.stopPropagation();
+    // console.log(item);
     const tablectItem = tablect.find((item) => item.id_video === activeItemId);
     if (!tablectItem) return;
 
@@ -101,15 +114,19 @@ const TableCT = ({
         is_update_all_cts: true,
       })
     );
+
+    dispatch(setActiveItemId(null));
+    dispatch(setActiveColId(null));
   };
 
-  const handleDeleteClick = (
+  const handleDeleteClick = async (
     e: React.MouseEvent<HTMLButtonElement>,
     item: ITablectData
   ) => {
     e.stopPropagation();
-    dispatch(deleteTablect(item.id_video));
-    dispatch(deleteAllHistoryPlayback(item.id_video));
+    await dispatch(deleteTablect(item.id_video));
+    await dispatch(getTablect());
+    await dispatch(getHistoryPlayback());
   };
 
   const handleConfirm = async () => {
@@ -119,7 +136,6 @@ const TableCT = ({
       va: JSON.stringify(item.va),
       confirm: user?.account || '',
     }));
-    // console.log(history_playback, confirmTablect);
     await dispatch(createTableCt(confirmTablect));
     await dispatch(createHistoryPlayback(history_playback));
     await dispatch(getTablect());
@@ -199,12 +215,7 @@ const TableCT = ({
                       <td
                         key={index}
                         onClick={(e) =>
-                          handleColumnClick(
-                            e,
-                            `${item.id_video}-${index}` === activeColId
-                              ? null
-                              : `${item.id_video}-${index}`
-                          )
+                          handleColumnClick(e, `${item.id_video}-${index}`)
                         }
                         className={`border text-center ${
                           activeColId === `${item.id_video}-${index}`
@@ -254,12 +265,7 @@ const TableCT = ({
                       <td
                         key={index}
                         onClick={(e) =>
-                          handleColumnClick(
-                            e,
-                            `${item.id_video}-${index}` === activeColId
-                              ? null
-                              : `${item.id_video}-${index}`
-                          )
+                          handleColumnClick(e, `${item.id_video}-${index}`)
                         }
                         className={`border text-center ${
                           activeColId === `${item.id_video}-${index}`

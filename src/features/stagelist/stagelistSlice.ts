@@ -132,8 +132,8 @@ export const deleteVideo = createAsyncThunk(
     try {
       await stagelistApi.deleteVideo(id);
       return id;
-    } catch (error) {
-      return rejectWithValue('Delete failed!');
+    } catch (error: any) {
+      return rejectWithValue(error.response.data.message || 'Delete failed!');
     }
   }
 );
@@ -213,24 +213,24 @@ const stagelistSlice = createSlice({
         state.error = action.payload as string;
       });
 
-    builder
-      .addCase(deleteVideo.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(deleteVideo.fulfilled, (state, action) => {
-        state.isLoading = false;
-        const deletedId = action.payload;
-        state.stagelist.forEach((stagelist) => {
-          stagelist.data = stagelist.data.filter(
-            (item) => item.id !== deletedId
-          );
-        });
-      })
-      .addCase(deleteVideo.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-      });
+    // builder
+    //   .addCase(deleteVideo.pending, (state) => {
+    //     state.isLoading = true;
+    //     state.error = null;
+    //   })
+    //   .addCase(deleteVideo.fulfilled, (state, action) => {
+    //     state.isLoading = false;
+    //     const deletedId = action.payload;
+    //     state.stagelist.forEach((stagelist) => {
+    //       stagelist.data = stagelist.data.filter(
+    //         (item) => item.id !== deletedId
+    //       );
+    //     });
+    //   })
+    //   .addCase(deleteVideo.rejected, (state, action) => {
+    //     state.isLoading = false;
+    //     state.error = action.payload as string;
+    //   });
   },
 });
 

@@ -3,11 +3,10 @@ import axiosConfig from '../axiosConfig';
 
 const historyplaybackApi = {
   createHistoryPlayback: async (payload: IHistoryPlayback[]) => {
-    const response = await axiosConfig.post('/history-playback', payload);
-    return response.data;
+    await axiosConfig.post('/history-playback', payload);
   },
   getHistoryPlayback: async () => {
-    const response = await axiosConfig.post('/history-playback');
+    const response = await axiosConfig.get('/history-playback');
     return response.data;
   },
 };

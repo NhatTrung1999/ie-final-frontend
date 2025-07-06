@@ -6,12 +6,13 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import type { ITablectData } from '../../../../types';
 import { setTablectData } from '../../../../features/tablect/tablectSlice';
 import {
-  deleteVideo,
   setActiveItemId,
   setActiveTabId,
   setVideoPath,
   type IStageListData,
 } from '../../../../features/stagelist/stagelistSlice';
+import { toast } from 'react-toastify';
+import stagelistApi from '../../../../services/api/stagelistApi';
 
 const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +26,9 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   );
   const { tablect } = useAppSelector((state) => state.tablect);
 
-  const stagelistItem = stagelist.filter((st) => st.name.toLowerCase() === activeTabId.toLowerCase())
+  const stagelistItem = stagelist.filter(
+    (st) => st.name.toLowerCase() === activeTabId.toLowerCase()
+  );
 
   const dispatch = useAppDispatch();
 
@@ -66,7 +69,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     // const newTablect: ITableBody
     const isDuplicate = tablect.some((row) => row.id_video === item.id);
     if (isDuplicate) {
-      dispatch(setVideoPath(item.video_path))
+      dispatch(setVideoPath(item.video_path));
       return;
     }
 
@@ -86,11 +89,20 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         average: 0,
       },
       confirm: '',
-      video_path: item.video_path || 'Unknown-video-path'
+      video_path: item.video_path || 'Unknown-video-path',
     };
 
     dispatch(setTablectData(newTablectData));
     dispatch(setVideoPath(item.video_path));
+  };
+
+  const handleConfirm = async (id: number) => {
+    try {
+      await stagelistApi.deleteVideo(id);
+      toast.success('Delete successful!');
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   const handleDeleteVideo = (
@@ -98,7 +110,31 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     id: number
   ) => {
     e.stopPropagation();
-    dispatch(deleteVideo(id));
+    toast(
+      ({ closeToast }) => (
+        <Div className="flex flex-col gap-2 justify-center">
+          <Div className="text-lg">Do you want to this data?</Div>
+          <Div className="flex items-center gap-2">
+            <Button
+              handleClick={() => {
+                handleConfirm(id);
+                toast.dismiss();
+              }}
+              className="bg-blue-500 px-2 py-1 text-white rounded-md cursor-pointer"
+            >
+              Confirm
+            </Button>
+            <Button
+              handleClick={closeToast}
+              className="bg-red-500 px-2 py-1 text-white rounded-md cursor-pointer"
+            >
+              Close
+            </Button>
+          </Div>
+        </Div>
+      ),
+      { autoClose: false, closeButton: false }
+    );
   };
 
   return (

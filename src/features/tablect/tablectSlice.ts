@@ -48,6 +48,17 @@ export const getTablect = createAsyncThunk(
   }
 );
 
+export const deleteTablect = createAsyncThunk(
+  'tablect/delete-tablect',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await tablectApi.deleteTablect(id);
+    } catch (error) {
+      return rejectWithValue(error || 'Delete error!');
+    }
+  }
+);
+
 export const tablectSlice = createSlice({
   name: 'tablect',
   initialState,
@@ -77,16 +88,25 @@ export const tablectSlice = createSlice({
           nva_time !== undefined &&
           va_time !== undefined
         ) {
-          item.nva.cts[col_index] = nva_time;
-          item.va.cts[col_index] = va_time;
+          if (is_update_all_cts) {
+            item.nva.cts[col_index] = nva_time;
+            item.va.cts[col_index] = va_time;
+          } else {
+            item.nva.cts[col_index] = (item.nva.cts[col_index] || 0) + nva_time;
+            item.va.cts[col_index] = (item.va.cts[col_index] || 0) + va_time;
+          }
         }
 
         if (is_update_all_cts) {
-          const nva_ct1 = item.nva.cts[0];
-          const va_ct1 = item.va.cts[0];
+          const nva_ct1 = nva_time;
+          const va_ct1 = va_time;
           for (let i = 1; i < item.nva.cts.length; i++) {
-            item.nva.cts[i] = nva_ct1 + Math.floor(Math.random() * 3);
-            item.va.cts[i] = va_ct1 + Math.floor(Math.random() * 3);
+            if (item.nva.cts[i] === 0) {
+              item.nva.cts[i] = nva_ct1 + Math.floor(Math.random() * 3);
+            }
+            if (item.va.cts[i] === 0) {
+              item.va.cts[i] = va_ct1 + Math.floor(Math.random() * 3);
+            }
           }
 
           item.nva.average = Math.round(
@@ -99,11 +119,11 @@ export const tablectSlice = createSlice({
         }
       }
     },
-    deleteTablect: (state, action: PayloadAction<number>) => {
-      state.tablect = state.tablect.filter(
-        (item) => item.id_video !== action.payload
-      );
-    },
+    // deleteTablect: (state, action: PayloadAction<number>) => {
+    //   state.tablect = state.tablect.filter(
+    //     (item) => item.id_video !== action.payload
+    //   );
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -126,7 +146,7 @@ export const {
   setTablectData,
   setActiveColId,
   setUpdateTablect,
-  deleteTablect,
+  // deleteTablect,
 } = tablectSlice.actions;
 
 export default tablectSlice.reducer;

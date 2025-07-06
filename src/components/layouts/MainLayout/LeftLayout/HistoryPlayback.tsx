@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { setDiffTypes } from '../../../../features/ctrlpanel/ctrlpanelSlice';
-import { deleteHistoryPlayback } from '../../../../features/historyplayback/historyPlaybackSlice';
+import {
+  deleteHistoryPlayback,
+  getHistoryPlayback,
+} from '../../../../features/historyplayback/historyPlaybackSlice';
 import { usePlayer } from '../../../../hooks/usePlayer';
 import type { IHistoryPlayback } from '../../../../types';
 import { formatTime } from '../../../../utils/formatTime';
@@ -18,6 +22,13 @@ const HistoryPlayback = ({
   const { activeItemId } = useAppSelector((state) => state.stagelist);
   // const { types } = useAppSelector((state) => state.ctrlpanel);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const getHistoryPlaybacks = async () => {
+      await dispatch(getHistoryPlayback());
+    };
+    getHistoryPlaybacks();
+  }, [dispatch]);
 
   const handleSeekTo = (item: IHistoryPlayback) => {
     if (playerRef.current) {
@@ -44,29 +55,31 @@ const HistoryPlayback = ({
     >
       <CardHeader title="History Playback" />
       <Div className=" flex-1 flex flex-col p-1 overflow-y-auto gap-1">
-        {history_playback.filter((hp) => hp.id_tablect === activeItemId).map((item, index) => (
-          <Div
-            key={index}
-            className="flex items-center p-1 bg-amber-400 gap-1 rounded-md text-white cursor-pointer"
-            onClick={() => handleSeekTo(item)}
-          >
-            <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
-              {formatTime(item.start_time)}
-            </Div>
-            <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
-              {formatTime(item.end_time)}
-            </Div>
-            <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
-              {item.type}
-            </Div>
+        {history_playback
+          .filter((hp) => hp.id_tablect === activeItemId)
+          .map((item, index) => (
             <Div
-              className="p-2 bg-gray-500 rounded-md"
-              onClick={(e) => handleDeleteHistoryPlayback(e, item)}
+              key={index}
+              className="flex items-center p-1 bg-amber-400 gap-1 rounded-md text-white cursor-pointer"
+              onClick={() => handleSeekTo(item)}
             >
-              <FaTrash size={20} />
+              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+                {formatTime(item.start_time)}
+              </Div>
+              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+                {formatTime(item.end_time)}
+              </Div>
+              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+                {item.type}
+              </Div>
+              <Div
+                className="p-2 bg-gray-500 rounded-md"
+                onClick={(e) => handleDeleteHistoryPlayback(e, item)}
+              >
+                <FaTrash size={20} />
+              </Div>
             </Div>
-          </Div>
-        ))}
+          ))}
       </Div>
     </Div>
   );

@@ -32,7 +32,7 @@ const stagelistApi = {
     try {
       await axiosConfig.delete(`/video/${id}`);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   },
 };

@@ -9,6 +9,13 @@ const tablectApi = {
     const response = await axiosConfig.get('/tablect');
     return response.data.data;
   },
+  deleteTablect: async (id: number) => {
+    try {
+      await axiosConfig.delete(`/tablect/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
 export default tablectApi;

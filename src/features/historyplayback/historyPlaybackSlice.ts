@@ -22,8 +22,8 @@ export const createHistoryPlayback = createAsyncThunk(
   'historyplayback/create',
   async (payload: IHistoryPlayback[], { rejectWithValue }) => {
     try {
-      const data = await historyplaybackApi.createHistoryPlayback(payload);
-      console.log(data);
+      await historyplaybackApi.createHistoryPlayback(payload);
+      // console.log(data);
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -35,6 +35,7 @@ export const getHistoryPlayback = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await historyplaybackApi.getHistoryPlayback();
+      // console.log(data);
       return data;
     } catch (error) {
       return rejectWithValue(error);
@@ -67,7 +68,7 @@ const historyPlaybackSlice = createSlice({
         state.error = null;
       })
       .addCase(getHistoryPlayback.fulfilled, (state, action) => {
-        console.log(action.payload);
+        state.history_playback = action.payload;
       })
       .addCase(getHistoryPlayback.rejected, (state, action) => {
         state.isLoading = false;
