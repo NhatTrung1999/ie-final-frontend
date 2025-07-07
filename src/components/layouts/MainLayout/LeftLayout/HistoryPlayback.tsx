@@ -9,7 +9,7 @@ import { usePlayer } from '../../../../hooks/usePlayer';
 import type { IHistoryPlayback } from '../../../../types';
 import { formatTime } from '../../../../utils/formatTime';
 import { CardHeader } from '../../../common';
-import { Div } from '../../../ui';
+import { Button, Div } from '../../../ui';
 import { FaTrash } from 'react-icons/fa';
 
 const HistoryPlayback = ({
@@ -20,6 +20,7 @@ const HistoryPlayback = ({
   const { playerRef } = usePlayer();
   const { history_playback } = useAppSelector((state) => state.historyPlayback);
   const { activeItemId } = useAppSelector((state) => state.stagelist);
+  const { tablect } = useAppSelector((state) => state.tablect);
   // const { types } = useAppSelector((state) => state.ctrlpanel);
   const dispatch = useAppDispatch();
 
@@ -37,16 +38,24 @@ const HistoryPlayback = ({
   };
 
   const handleDeleteHistoryPlayback = (
-    e: React.MouseEvent<HTMLDivElement | null>,
+    e: React.MouseEvent<HTMLButtonElement | null>,
     item: IHistoryPlayback
   ) => {
     e.stopPropagation();
     const time = item.end_time - item.start_time;
-    // console.log(item);
+    console.log(time);
     dispatch(setDiffTypes({ type: item.type, time: Math.floor(time) }));
     dispatch(deleteHistoryPlayback(item.id_historyplayback));
   };
-  // console.log(history_playback);
+
+  const hasAllCTValues = () => {
+    const item = tablect.find((tc) => tc.id_video === activeItemId);
+    if (item) {
+      return (
+        item.nva.cts.every((ct) => ct > 0) && item.va.cts.every((ct) => ct > 0)
+      );
+    }
+  };
 
   return (
     <Div
@@ -72,12 +81,13 @@ const HistoryPlayback = ({
               <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
                 {item.type}
               </Div>
-              <Div
+              <Button
+                disabled={hasAllCTValues()}
                 className="p-2 bg-gray-500 rounded-md"
-                onClick={(e) => handleDeleteHistoryPlayback(e, item)}
+                handleClick={(e) => handleDeleteHistoryPlayback(e, item)}
               >
                 <FaTrash size={20} />
-              </Div>
+              </Button>
             </Div>
           ))}
       </Div>

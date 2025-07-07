@@ -119,11 +119,6 @@ export const tablectSlice = createSlice({
         }
       }
     },
-    // deleteTablect: (state, action: PayloadAction<number>) => {
-    //   state.tablect = state.tablect.filter(
-    //     (item) => item.id_video !== action.payload
-    //   );
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -133,7 +128,6 @@ export const tablectSlice = createSlice({
       })
       .addCase(getTablect.fulfilled, (state, action) => {
         state.tablect = action.payload;
-        // console.log(action.payload);
       })
       .addCase(getTablect.rejected, (state, action) => {
         state.isLoading = false;
@@ -146,7 +140,6 @@ export const {
   setTablectData,
   setActiveColId,
   setUpdateTablect,
-  // deleteTablect,
 } = tablectSlice.actions;
 
 export default tablectSlice.reducer;

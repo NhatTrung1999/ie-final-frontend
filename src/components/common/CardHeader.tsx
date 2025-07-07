@@ -6,13 +6,17 @@ const CardHeader = ({
   isShowIcon = false,
   isShowButton = false,
   setIsOpen,
-  handleConfirm
+  handleConfirm,
+  handleExportExcelTimeStudy,
+  handleExportExcelLSA
 }: {
   title: string;
   isShowIcon?: boolean;
   isShowButton?: boolean;
   setIsOpen?: (isOpen: boolean) => void;
   handleConfirm?: () => void
+  handleExportExcelTimeStudy?: () => void
+  handleExportExcelLSA?: () => void
 }) => {
   return (
     <Div className="bg-amber-400 flex justify-between items-center p-3 rounded-t-md">
@@ -38,10 +42,10 @@ const CardHeader = ({
           <Button handleClick={handleConfirm} className="bg-blue-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
             Confirm
           </Button>
-          <Button className="bg-green-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
+          <Button handleClick={handleExportExcelLSA} className="bg-green-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
             Excel LSA
           </Button>
-          <Button className="bg-green-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
+          <Button handleClick={handleExportExcelTimeStudy} className="bg-green-500 font-semibold px-3 py-1 rounded-md text-white cursor-pointer">
             Excel TimeStudy
           </Button>
         </Div>

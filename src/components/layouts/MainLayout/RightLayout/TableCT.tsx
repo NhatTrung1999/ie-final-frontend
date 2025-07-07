@@ -23,6 +23,12 @@ import {
   createHistoryPlayback,
   getHistoryPlayback,
 } from '../../../../features/historyplayback/historyPlaybackSlice';
+import {
+  setCurrentTime,
+  setDuration,
+} from '../../../../features/ctrlpanel/ctrlpanelSlice';
+import type { AxiosResponse } from 'axios';
+import axiosConfig from '../../../../services/axiosConfig';
 
 const header: ITablectHeader[] = [
   {
@@ -66,10 +72,16 @@ const TableCT = ({
     colId: string | null
   ) => {
     e.stopPropagation();
+
     if (activeItemId && colId) {
+      const itemTablect = tablect.find(
+        (item) => item.id_video === activeItemId
+      );
+      const isValidNVA = itemTablect?.nva.cts.every((value) => value > 0);
+      const isValidVA = itemTablect?.va.cts.every((value) => value > 0);
       const colRowId = colId.split('-')[0];
       if (activeItemId === Number(colRowId)) {
-        if (colId === activeColId) {
+        if (colId === activeColId || (isValidNVA && isValidVA)) {
           dispatch(setActiveColId(null));
         } else {
           dispatch(setActiveColId(colId));
@@ -83,6 +95,8 @@ const TableCT = ({
       dispatch(setVideoPath(''));
       dispatch(setActiveItemId(null));
       dispatch(setActiveColId(null));
+      dispatch(setCurrentTime(0));
+      dispatch(setDuration(0));
     } else {
       dispatch(setVideoPath(item.video_path as string));
       dispatch(setActiveItemId(item.id_video));
@@ -94,7 +108,6 @@ const TableCT = ({
     item: ITablectData
   ) => {
     e.stopPropagation();
-    // console.log(item);
     const tablectItem = tablect.find((item) => item.id_video === activeItemId);
     if (!tablectItem) return;
 
@@ -117,6 +130,9 @@ const TableCT = ({
 
     dispatch(setActiveItemId(null));
     dispatch(setActiveColId(null));
+    dispatch(setVideoPath(''));
+    dispatch(setCurrentTime(0));
+    dispatch(setDuration(0));
   };
 
   const handleDeleteClick = async (
@@ -125,8 +141,11 @@ const TableCT = ({
   ) => {
     e.stopPropagation();
     await dispatch(deleteTablect(item.id_video));
+    await dispatch(setActiveItemId(null));
+    await dispatch(setActiveColId(null));
     await dispatch(getTablect());
     await dispatch(getHistoryPlayback());
+    await dispatch(setVideoPath(''));
   };
 
   const handleConfirm = async () => {
@@ -135,7 +154,9 @@ const TableCT = ({
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
       confirm: user?.account || '',
+      video_path: item.video_path
     }));
+
     await dispatch(createTableCt(confirmTablect));
     await dispatch(createHistoryPlayback(history_playback));
     await dispatch(getTablect());
@@ -149,6 +170,64 @@ const TableCT = ({
     );
   };
 
+  const handleExportExcelTimeStudy = async () => {
+    const itemTablect = tablect.every((item) => item.confirm !== '');
+    if (itemTablect) {
+      try {
+        const response: AxiosResponse<Blob> = await axiosConfig.get(
+          '/export-excel/export-excel-time-study',
+          {
+            responseType: 'blob',
+          }
+        );
+
+        const url = URL.createObjectURL(new Blob([response.data]));
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Excel TimeStudy.xlsx');
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast.warning('Please enter your id confirm!');
+    }
+  };
+
+  const handleExportExcelLSA = async () => {
+    const itemTablect = tablect.every((item) => item.confirm !== '');
+    if (itemTablect) {
+      try {
+        const response: AxiosResponse<Blob> = await axiosConfig.get(
+          '/export-excel/export-excel-lsa',
+          {
+            responseType: 'blob',
+          }
+        );
+
+        const url = URL.createObjectURL(new Blob([response.data]));
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Excel LSA.xlsx');
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast.warning('Please enter your id confirm!');
+    }
+  };
+
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
@@ -158,6 +237,8 @@ const TableCT = ({
         title="Table CT"
         isShowButton={true}
         handleConfirm={handleConfirm}
+        handleExportExcelTimeStudy={handleExportExcelTimeStudy}
+        handleExportExcelLSA={handleExportExcelLSA}
       />
       <Div
         className=" flex-1 overflow-x-auto"

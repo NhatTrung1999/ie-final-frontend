@@ -23,7 +23,7 @@ const Select = ({
       name={name}
       id={id}
       style={style}
-      className={`w-full outline-none p-2 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 bg-white ${className}`}
+      className={`w-full outline-none px-2 py-1 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-500 bg-white ${className}`}
       onChange={onChange}
       {...rest}
     >

@@ -56,7 +56,8 @@ const ctrlpanelSlice = createSlice({
       state,
       action: PayloadAction<{ type: string; time: number }>
     ) => {
-      state.types[action.payload.type] -= action.payload.time;
+      const newValue = state.types[action.payload.type] - action.payload.time;
+      state.types[action.payload.type] = newValue < 0 ? 0 : newValue;
     },
     setResetTypes: (
       state,
@@ -76,7 +77,7 @@ export const {
   setLastElapsedTime,
   setTypes,
   setDiffTypes,
-  setResetTypes
+  setResetTypes,
 } = ctrlpanelSlice.actions;
 
 export default ctrlpanelSlice.reducer;

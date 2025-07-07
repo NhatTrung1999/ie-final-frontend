@@ -13,6 +13,10 @@ import {
 } from '../../../../features/stagelist/stagelistSlice';
 import { toast } from 'react-toastify';
 import stagelistApi from '../../../../services/api/stagelistApi';
+import {
+  setCurrentTime,
+  setDuration,
+} from '../../../../features/ctrlpanel/ctrlpanelSlice';
 
 const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -98,8 +102,14 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
 
   const handleConfirm = async (id: number) => {
     try {
+      const item = tablect.filter((tc) => tc.id_video === id);
+      if (item.length > 0) {
+        toast.warn('Please delete row under the TableCT!', { delay: 100 });
+        return;
+      }
       await stagelistApi.deleteVideo(id);
       toast.success('Delete successful!');
+      // toast.dismiss()
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -146,7 +156,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         <CardHeader title="StageList" isShowIcon={true} setIsOpen={setIsOpen} />
         <Div
           ref={scrollRef}
-          className="overflow-x-hidden px-3 flex flex-nowrap gap-3 py-1 cursor-grab bg-[#aaa]"
+          className="overflow-x-hidden px-3 flex flex-nowrap gap-3 py-1 cursor-grab bg-[#aaa] select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -158,7 +168,10 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
               className={`${
                 item.name === activeTabId ? 'bg-amber-200' : ''
               } px-2 py-1 rounded-md font-semibold`}
-              onClick={() => dispatch(setActiveTabId(item.name))}
+              onClick={() => {
+                dispatch(setActiveItemId(null));
+                dispatch(setActiveTabId(item.name));
+              }}
             >
               {item.name}
             </Div>
@@ -172,10 +185,18 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 item.id === activeItemId ? 'bg-white' : ''
               } hover:bg-gray-200 px-3 py-1 flex flex-row justify-between items-center cursor-pointer`}
               onClick={() => {
-                // console.log(item.id);
-                dispatch(
-                  setActiveItemId(item.id === activeItemId ? null : item.id)
-                );
+                if (item.id === activeItemId) {
+                  dispatch(setActiveItemId(null));
+                  dispatch(setVideoPath(''));
+                  // dispatch(setActiveColId(null));
+                  dispatch(setCurrentTime(0));
+                  dispatch(setDuration(0));
+                } else {
+                  dispatch(setActiveItemId(item.id));
+                }
+                // dispatch(
+                //   setActiveItemId(item.id === activeItemId ? null : item.id)
+                // );
                 handleSelectedItem(item);
               }}
             >

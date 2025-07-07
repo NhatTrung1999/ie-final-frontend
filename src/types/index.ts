@@ -129,6 +129,7 @@ export interface ITablectPayload {
   nva: string;
   va: string;
   confirm: string;
+  video_path?: string;
 }
 
 export interface IHistoryPlayback {

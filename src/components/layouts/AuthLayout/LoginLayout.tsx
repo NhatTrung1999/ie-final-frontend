@@ -90,6 +90,7 @@ const LoginLayout = () => {
               id="password"
               autoComplete="off"
               className="w-full"
+              type='password'
               {...register('password', { required: true })}
               ariaInvalid={errors.password ? 'true' : 'false'}
             />

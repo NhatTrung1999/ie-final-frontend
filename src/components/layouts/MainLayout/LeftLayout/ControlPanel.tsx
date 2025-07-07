@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   setCurrentTime,
@@ -62,6 +63,12 @@ const ControlPanel = ({
 
   const handleClickTypes = (type: 'NVA' | 'VA' | 'SKIP') => {
     // console.log(activeItemId);
+    if(isPlaying) {
+      toast.warn('Cannot select status while the video is playing!');
+      return;
+
+    }
+
     const newHistoryPlayback: IHistoryPlayback = {
       id_historyplayback: `${activeItemId}${history_playback.length}`,
       id_tablect: activeItemId,
@@ -77,6 +84,11 @@ const ControlPanel = ({
 
   const handleClickDone = () => {
     if (activeColId && activeItemId) {
+      if(isPlaying) {
+      toast.warn('Cannot done while the video is playing!');
+      return;
+
+    }
       const [id_video, col_index] = activeColId.split('-').map(Number);
       dispatch(
         setUpdateTablect({
