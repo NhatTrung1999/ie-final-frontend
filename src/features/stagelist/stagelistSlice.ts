@@ -89,10 +89,14 @@ export const uploadVideo = createAsyncThunk(
     {
       payload,
       onProgress,
-    }: { payload: IFormPayload; onProgress?: (progress: number) => void },
+    }: {
+      payload: IFormPayload & { signal?: AbortSignal };
+      onProgress?: (progress: number) => void;
+    },
     { rejectWithValue }
   ) => {
-    const { date, season, stage, area, article, video, created_by } = payload;
+    const { date, season, stage, area, article, video, created_by, signal } =
+      payload;
     const formData = new FormData();
 
     formData.append('date', date.trim());
@@ -110,12 +114,12 @@ export const uploadVideo = createAsyncThunk(
     try {
       const { message, data } = await stagelistApi.uploadVideo(
         formData,
-        onProgress
+        onProgress,
+        signal
       );
-      // console.log(response);
       return { message, data };
     } catch (error: any) {
-      if (error.name === 'AbortError') {
+      if (error.name === 'AxiosError' && error.code === 'ERR_CANCELED') {
         return rejectWithValue('Upload canceled');
       }
       return rejectWithValue(error.message);
@@ -199,7 +203,9 @@ const stagelistSlice = createSlice({
       })
       .addCase(uploadVideo.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        if (action.payload !== 'Upload canceled') {
+          state.error = action.payload as string;
+        }
       });
 
     builder
@@ -214,41 +220,11 @@ const stagelistSlice = createSlice({
             (item) => item.area.toLowerCase() === stagelist.name.toLowerCase()
           );
         });
-
-        // data.forEach((item) => {
-        //   const stagelist = state.stagelist.find(
-        //     (a) => a.name.toLowerCase() === item.area.toLowerCase()
-        //   );
-        //   if (stagelist) {
-        //     if (!stagelist.data.some((existing) => existing.id === item.id)) {
-        //       stagelist.data.push(item);
-        //     }
-        //   }
-        // });
       })
       .addCase(getVideo.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
-
-    // builder
-    //   .addCase(deleteVideo.pending, (state) => {
-    //     state.isLoading = true;
-    //     state.error = null;
-    //   })
-    //   .addCase(deleteVideo.fulfilled, (state, action) => {
-    //     state.isLoading = false;
-    //     const deletedId = action.payload;
-    //     state.stagelist.forEach((stagelist) => {
-    //       stagelist.data = stagelist.data.filter(
-    //         (item) => item.id !== deletedId
-    //       );
-    //     });
-    //   })
-    //   .addCase(deleteVideo.rejected, (state, action) => {
-    //     state.isLoading = false;
-    //     state.error = action.payload as string;
-    //   });
   },
 });
 

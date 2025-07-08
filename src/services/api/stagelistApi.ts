@@ -4,7 +4,8 @@ import axiosConfig from '../axiosConfig';
 const stagelistApi = {
   uploadVideo: async (
     payload: FormData,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    signal?: AbortSignal
   ) => {
     try {
       const response = await axiosConfig.post('/video/upload-video', payload, {
@@ -17,8 +18,8 @@ const stagelistApi = {
             onProgress?.(percentCompleted);
           }
         },
+        signal,
       });
-      // console.log(response);
       return response.data;
     } catch (error: any) {
       throw error;

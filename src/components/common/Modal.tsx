@@ -2,10 +2,9 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Div, Form, Input, Label, Option, Select } from '../ui';
 import type { IFormModal } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   setFormValues,
-  // cancelUpload,
   uploadVideo,
 } from '../../features/stagelist/stagelistSlice';
 
@@ -23,6 +22,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const { user } = useAppSelector((state) => state.auth);
   const { formValues } = useAppSelector((state) => state.stagelist);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const dispatch = useAppDispatch();
   // const abortControllerRef = useRef<AbortController | null>(null);
@@ -40,6 +40,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const onSubmit: SubmitHandler<IFormModal> = async (data) => {
     // console.log(user);
     // abortControllerRef.current = new AbortController();
+    abortControllerRef.current = new AbortController();
     const { date, season, stage, area, article, video } = data;
     dispatch(setFormValues({ date, season, stage, area, article }));
     const uploadResult = await dispatch(
@@ -52,7 +53,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
           article,
           video,
           created_by: user?.account || 'unknown',
-          // signal: abortControllerRef.current.signal,
+          signal: abortControllerRef.current.signal,
         },
         onProgress: (progress: number) => setUploadProgress(progress),
       })
@@ -62,13 +63,13 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
     }
   };
 
-  // const handleCancel = () => {
-  //   if (abortControllerRef.current) {
-  //     abortControllerRef.current.abort();
-  //     // dispatch(cancelUpload());
-  //     setIsOpen?.(false);
-  //   }
-  // };
+  const handleCancel = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setUploadProgress(0);
+      setIsOpen?.(false);
+    }
+  };
 
   return (
     <Div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -261,13 +262,13 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
                     : 'Upload'}
                 </Button>
 
-                {/* <Button
+                <Button
                   type="button"
                   handleClick={handleCancel}
                   className="w-full text-white bg-red-500 hover:bg-red-600 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   Cancel
-                </Button> */}
+                </Button>
               </Div>
             </Form>
           </Div>
