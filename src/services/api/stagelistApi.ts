@@ -1,4 +1,4 @@
-import type { IVideoResponse } from '../../types';
+import type { ISearch, IVideoResponse } from '../../types';
 import axiosConfig from '../axiosConfig';
 
 const stagelistApi = {
@@ -24,8 +24,8 @@ const stagelistApi = {
       throw error;
     }
   },
-  getVideo: async (): Promise<IVideoResponse[]> => {
-    const response = await axiosConfig.get('/video');
+  getVideo: async (payload: ISearch): Promise<IVideoResponse[]> => {
+    const response = await axiosConfig.get('/video', { params: payload });
     return response.data.data;
   },
   deleteVideo: async (id: number): Promise<void> => {

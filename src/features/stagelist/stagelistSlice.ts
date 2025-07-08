@@ -4,7 +4,7 @@ import {
   type PayloadAction,
 } from '@reduxjs/toolkit';
 import stagelistApi from '../../services/api/stagelistApi';
-import type { IFormPayload } from '../../types';
+import type { IFormPayload, ISearch } from '../../types';
 
 export interface IStageListData {
   id: number;
@@ -38,6 +38,7 @@ interface IStageListState {
     area: string;
     article: string;
   };
+  search?: ISearch;
 }
 
 const initialState: IStageListState = {
@@ -70,6 +71,14 @@ const initialState: IStageListState = {
     season: '',
     stage: '',
     area: 'CUTTING',
+    article: '',
+  },
+  search: {
+    date_from: new Date().toISOString().split('T')[0],
+    date_to: new Date().toISOString().split('T')[0],
+    season: '',
+    stage: '',
+    area: '',
     article: '',
   },
 };
@@ -114,11 +123,12 @@ export const uploadVideo = createAsyncThunk(
   }
 );
 
-export const fetchVideo = createAsyncThunk(
+export const getVideo = createAsyncThunk(
   'stagelist/get-video',
-  async (_, { rejectWithValue }) => {
+  async (payload: ISearch, { rejectWithValue }) => {
     try {
-      const data = await stagelistApi.getVideo();
+      const data = await stagelistApi.getVideo(payload);
+      console.log(data);
       return data;
     } catch (error) {
       return rejectWithValue('Error fetch video');
@@ -163,6 +173,9 @@ const stagelistSlice = createSlice({
     ) => {
       state.formValues = { ...action.payload };
     },
+    setSearch: (state, action: PayloadAction<ISearch>) => {
+      state.search = { ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -190,25 +203,30 @@ const stagelistSlice = createSlice({
       });
 
     builder
-      .addCase(fetchVideo.pending, (state) => {
+      .addCase(getVideo.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchVideo.fulfilled, (state, action) => {
+      .addCase(getVideo.fulfilled, (state, action) => {
         const data = action.payload;
-
-        data.forEach((item) => {
-          const stagelist = state.stagelist.find(
-            (a) => a.name.toLowerCase() === item.area.toLowerCase()
+        state.stagelist.forEach((stagelist) => {
+          stagelist.data = data.filter(
+            (item) => item.area.toLowerCase() === stagelist.name.toLowerCase()
           );
-          if (stagelist) {
-            if (!stagelist.data.some((existing) => existing.id === item.id)) {
-              stagelist.data.push(item);
-            }
-          }
         });
+
+        // data.forEach((item) => {
+        //   const stagelist = state.stagelist.find(
+        //     (a) => a.name.toLowerCase() === item.area.toLowerCase()
+        //   );
+        //   if (stagelist) {
+        //     if (!stagelist.data.some((existing) => existing.id === item.id)) {
+        //       stagelist.data.push(item);
+        //     }
+        //   }
+        // });
       })
-      .addCase(fetchVideo.rejected, (state, action) => {
+      .addCase(getVideo.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
@@ -234,7 +252,12 @@ const stagelistSlice = createSlice({
   },
 });
 
-export const { setVideoPath, setActiveTabId, setActiveItemId, setFormValues } =
-  stagelistSlice.actions;
+export const {
+  setVideoPath,
+  setActiveTabId,
+  setActiveItemId,
+  setFormValues,
+  setSearch,
+} = stagelistSlice.actions;
 
 export default stagelistSlice.reducer;

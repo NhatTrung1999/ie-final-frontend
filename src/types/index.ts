@@ -141,3 +141,12 @@ export interface IHistoryPlayback {
   created_by: string;
   created_at: string;
 }
+
+export interface ISearch {
+  date_from?: string;
+  date_to?: string;
+  season?: string;
+  stage?: string;
+  area?: string;
+  article?: string;
+}

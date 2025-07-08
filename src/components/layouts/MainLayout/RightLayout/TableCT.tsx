@@ -50,7 +50,7 @@ const TableCT = ({
   tableCtWidth: number;
 }) => {
   const { tablect, activeColId } = useAppSelector((state) => state.tablect);
-  const { activeItemId, activeTabId } = useAppSelector(
+  const { activeItemId, activeTabId, search } = useAppSelector(
     (state) => state.stagelist
   );
 
@@ -60,12 +60,11 @@ const TableCT = ({
 
   useEffect(() => {
     const getTablects = async () => {
-      const response = await dispatch(getTablect());
-      return response;
+      await dispatch(getTablect(search || {}));
     };
 
     getTablects();
-  }, [dispatch]);
+  }, [dispatch, search]);
 
   const handleColumnClick = (
     e: React.MouseEvent<HTMLTableCellElement>,
@@ -143,8 +142,8 @@ const TableCT = ({
     await dispatch(deleteTablect(item.id_video));
     await dispatch(setActiveItemId(null));
     await dispatch(setActiveColId(null));
-    await dispatch(getTablect());
-    await dispatch(getHistoryPlayback());
+    await dispatch(getTablect(search || {}));
+    await dispatch(getHistoryPlayback(search || {}));
     await dispatch(setVideoPath(''));
   };
 
@@ -159,8 +158,8 @@ const TableCT = ({
 
     await dispatch(createTableCt(confirmTablect));
     await dispatch(createHistoryPlayback(history_playback));
-    await dispatch(getTablect());
-    await dispatch(getHistoryPlayback());
+    await dispatch(getTablect(search || {}));
+    await dispatch(getHistoryPlayback(search || {}));
   };
 
   const hasAllCTValues = (item: ITablectData) => {
@@ -178,6 +177,7 @@ const TableCT = ({
           '/export-excel/export-excel-time-study',
           {
             responseType: 'blob',
+            params: {...search}
           }
         );
 
@@ -207,6 +207,7 @@ const TableCT = ({
           '/export-excel/export-excel-lsa',
           {
             responseType: 'blob',
+            params: search
           }
         );
 

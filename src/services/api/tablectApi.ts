@@ -1,12 +1,12 @@
-import type { ITablectPayload } from '../../types';
+import type { ISearch, ITablectPayload } from '../../types';
 import axiosConfig from '../axiosConfig';
 
 const tablectApi = {
   confirmTablect: async (payload: ITablectPayload[]) => {
     await axiosConfig.post('/tablect', payload);
   },
-  getTablect: async (): Promise<ITablectPayload[]> => {
-    const response = await axiosConfig.get('/tablect');
+  getTablect: async (payload: ISearch): Promise<ITablectPayload[]> => {
+    const response = await axiosConfig.get('/tablect', {params: payload});
     return response.data.data;
   },
   deleteTablect: async (id: number) => {

@@ -1,16 +1,35 @@
 import { useEffect, useState } from 'react';
-import { Button, Div, Header, Input, Option, Select } from '../ui';
-import { useAppDispatch } from '../../app/hooks';
-import { fetchVideo } from '../../features/stagelist/stagelistSlice';
+import { Button, Div, Form, Header, Input, Option, Select } from '../ui';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { getVideo, setSearch } from '../../features/stagelist/stagelistSlice';
 import { logout } from '../../features/auth/authSlice';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import type { ISearch } from '../../types';
+import { getTablect } from '../../features/tablect/tablectSlice';
+import { getHistoryPlayback } from '../../features/historyplayback/historyPlaybackSlice';
 
 const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
+  const { register, handleSubmit, setValue } = useForm<ISearch>();
+  const { search } = useAppSelector((state) => state.stagelist);
   const dispatch = useAppDispatch();
   const [isLogout, setIsLogout] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchVideo());
-  }, []);
+    if (search) {
+      dispatch(getVideo(search));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (search) {
+      setValue('date_from', search.date_from);
+      setValue('date_to', search.date_to);
+      setValue('season', search.season);
+      setValue('stage', search.stage);
+      setValue('area', search.area);
+      setValue('article', search.article);
+    }
+  }, [search, setValue]);
 
   const handleIsLogout = () => {
     setIsLogout(!isLogout);
@@ -20,17 +39,27 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
     dispatch(logout());
   };
 
+  const onSubmit: SubmitHandler<ISearch> = async(data) => {
+    await dispatch(getVideo(data))
+    await dispatch(getTablect(data))
+    await dispatch(getHistoryPlayback(data))
+    await dispatch(setSearch(data))
+  };
+
   return (
     <Header style={{ height: headerHeight }} className="px-2 pt-2">
       <Div className="bg-teal-400 h-full rounded-md flex items-center justify-between px-2">
         <Div className="text-2xl font-semibold text-white text-shadow-2xs">
           IE Video CT System
         </Div>
-        <Div className="flex gap-2 items-center flex-nowrap overflow-x-auto">
-          <Input type="date" />
-          <Input type="date" />
-          <Input placeholder="Search season..." />
-          <Select>
+        <Form
+          className="flex gap-2 items-center flex-nowrap overflow-x-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Input type="date" {...register('date_from')} />
+          <Input type="date" {...register('date_to')} />
+          <Input placeholder="Search season..." {...register('season')} />
+          <Select {...register('stage')}>
             <Option value="" name="---Choose Option---" />
             <Option value="Pullover" name="Pullover" />
             <Option value="CR0" name="CR0" />
@@ -41,7 +70,7 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
             <Option value="CS2" name="CS2" />
             <Option value="Customer" name="Customer" />
           </Select>
-          <Select>
+          <Select {...register('area')}>
             <Option value="" name="---Choose Option---" />
             <Option value="CUTTING" name="CUTTING" />
             <Option value="STITCHING" name="STITCHING" />
@@ -49,11 +78,14 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
             <Option value="STOCKFITTING" name="STOCKFITTING" />
             <Option value="NOSEW" name="NOSEW" />
           </Select>
-          <Input placeholder="Search article..." />
-          <Button className="px-2 py-1 bg-blue-500 rounded-md text-white font-semibold cursor-pointer">
+          <Input placeholder="Search article..." {...register('article')} />
+          <Button
+            className="px-2 py-1 bg-blue-500 rounded-md text-white font-semibold cursor-pointer"
+            type="submit"
+          >
             Search
           </Button>
-        </Div>
+        </Form>
         <Div className="relative">
           <Div
             className="flex items-center gap-2 bg-gray-400 rounded-full pl-3 cursor-pointer"

@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type { ITablectData, ITablectPayload } from '../../types';
+import type { ISearch, ITablectData, ITablectPayload } from '../../types';
 import tablectApi from '../../services/api/tablectApi';
 
 interface ITablectState {
@@ -33,9 +33,9 @@ export const createTableCt = createAsyncThunk(
 
 export const getTablect = createAsyncThunk(
   'tablect/get-tablect',
-  async (_, { rejectWithValue }) => {
+  async (payload: ISearch, { rejectWithValue }) => {
     try {
-      const res = await tablectApi.getTablect();
+      const res = await tablectApi.getTablect(payload);
       const data = res.map((item) => ({
         ...item,
         nva: JSON.parse(item.nva),

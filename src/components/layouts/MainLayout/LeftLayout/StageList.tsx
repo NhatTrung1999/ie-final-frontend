@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import type { ITablectData } from '../../../../types';
 import { setTablectData } from '../../../../features/tablect/tablectSlice';
 import {
+  getVideo,
   setActiveItemId,
   setActiveTabId,
   setVideoPath,
@@ -25,7 +26,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const scrollLeftStart = useRef<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { stagelist, activeItemId, activeTabId } = useAppSelector(
+  const { stagelist, activeItemId, activeTabId, search } = useAppSelector(
     (state) => state.stagelist
   );
   const { tablect } = useAppSelector((state) => state.tablect);
@@ -108,8 +109,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         return;
       }
       await stagelistApi.deleteVideo(id);
+      await dispatch(getVideo(search || {}))
       toast.success('Delete successful!');
-      // toast.dismiss()
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -122,28 +123,28 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     e.stopPropagation();
     toast(
       ({ closeToast }) => (
-        <Div className="flex flex-col gap-2 justify-center">
-          <Div className="text-lg">Do you want to this data?</Div>
-          <Div className="flex items-center gap-2">
+        <Div className="flex flex-col gap-2 justify-center flex-1 items-center">
+          <Div className="text-lg text-center">Do you want to this data?</Div>
+          <Div className="flex items-center justify-center gap-2">
             <Button
               handleClick={() => {
                 handleConfirm(id);
                 toast.dismiss();
               }}
-              className="bg-blue-500 px-2 py-1 text-white rounded-md cursor-pointer"
+              className="bg-blue-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
             >
               Confirm
             </Button>
             <Button
               handleClick={closeToast}
-              className="bg-red-500 px-2 py-1 text-white rounded-md cursor-pointer"
+              className="bg-red-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
             >
               Close
             </Button>
           </Div>
         </Div>
       ),
-      { autoClose: false, closeButton: false }
+      { autoClose: false, closeButton: false, position: 'top-center' }
     );
   };
 
@@ -188,22 +189,18 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 if (item.id === activeItemId) {
                   dispatch(setActiveItemId(null));
                   dispatch(setVideoPath(''));
-                  // dispatch(setActiveColId(null));
                   dispatch(setCurrentTime(0));
                   dispatch(setDuration(0));
                 } else {
                   dispatch(setActiveItemId(item.id));
-                }
-                // dispatch(
-                //   setActiveItemId(item.id === activeItemId ? null : item.id)
-                // );
+                };
                 handleSelectedItem(item);
               }}
             >
               <Div className="text-lg font-medium">{item.video_name}</Div>
               <Button
                 type="button"
-                className="cursor-pointer"
+                className="cursor-pointer opacity-0 hover:opacity-100"
                 handleClick={(e) => handleDeleteVideo(e, item.id)}
               >
                 <svg

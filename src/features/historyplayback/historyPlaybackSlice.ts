@@ -3,7 +3,7 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import type { IHistoryPlayback } from '../../types';
+import type { IHistoryPlayback, ISearch } from '../../types';
 import historyplaybackApi from '../../services/api/historyplaybackApi';
 
 interface IHistoryPlaybackState {
@@ -32,9 +32,9 @@ export const createHistoryPlayback = createAsyncThunk(
 
 export const getHistoryPlayback = createAsyncThunk(
   'historyplayback/get-historyplayback',
-  async (_, { rejectWithValue }) => {
+  async (payload: ISearch, { rejectWithValue }) => {
     try {
-      const data = await historyplaybackApi.getHistoryPlayback();
+      const data = await historyplaybackApi.getHistoryPlayback(payload);
       // console.log(data);
       return data;
     } catch (error) {
