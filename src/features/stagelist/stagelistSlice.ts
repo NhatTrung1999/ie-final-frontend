@@ -132,7 +132,6 @@ export const getVideo = createAsyncThunk(
   async (payload: ISearch, { rejectWithValue }) => {
     try {
       const data = await stagelistApi.getVideo(payload);
-      console.log(data);
       return data;
     } catch (error) {
       return rejectWithValue('Error fetch video');

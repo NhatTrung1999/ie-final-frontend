@@ -98,14 +98,59 @@ export const tablectSlice = createSlice({
         }
 
         if (is_update_all_cts) {
-          const nva_ct1 = nva_time;
-          const va_ct1 = va_time;
-          for (let i = 1; i < item.nva.cts.length; i++) {
-            if (item.nva.cts[i] === 0) {
-              item.nva.cts[i] = nva_ct1 + Math.floor(Math.random() * 3);
+          const validNvaCts = item.nva.cts.filter((ct) => ct > 0);
+          const validVaCts = item.va.cts.filter((ct) => ct > 0);
+
+          if (validNvaCts.length === 1 && validVaCts.length === 1) {
+            for (let i = 1; i < item.nva.cts.length; i++) {
+              if (item.nva.cts[i] === 0) {
+                item.nva.cts[i] = nva_time + Math.floor(Math.random() * 3);
+              }
+              if (item.va.cts[i] === 0) {
+                item.va.cts[i] = va_time + Math.floor(Math.random() * 3);
+              }
             }
-            if (item.va.cts[i] === 0) {
-              item.va.cts[i] = va_ct1 + Math.floor(Math.random() * 3);
+          } else if (validNvaCts.length >= 2 && validVaCts.length >= 2) {
+            const nvaDiffs = validNvaCts
+              .slice(1)
+              .map((ct, i) => Math.abs(ct - validNvaCts[i]));
+            console.log('nvaDiffs: ', nvaDiffs);
+            const vaDiffs = validVaCts
+              .slice(1)
+              .map((ct, i) => Math.abs(ct - validVaCts[i]));
+            console.log('vaDiffs: ', vaDiffs);
+
+            const nvaAvgDiff =
+              nvaDiffs.reduce((sum, diff) => sum + diff, 0) / nvaDiffs.length;
+
+            console.log('nvaAvgDiff: ', nvaAvgDiff);
+
+            const vaAvgDiff =
+              vaDiffs.reduce((sum, diff) => sum + diff, 0) / vaDiffs.length;
+
+            console.log('vaAvgDiff: ', vaAvgDiff);
+
+            const nvaMean =
+              validNvaCts.reduce((sum, ct) => sum + ct, 0) / validNvaCts.length;
+
+            console.log('nvaMean: ', nvaMean);
+
+            const vaMean =
+              validVaCts.reduce((sum, ct) => sum + ct, 0) / validVaCts.length;
+
+            console.log('vaMean: ', vaMean);
+
+            for (let i = 0; i < item.nva.cts.length; i++) {
+              if (item.nva.cts[i] === 0) {
+                item.nva.cts[i] =
+                  Math.ceil(nvaMean) +
+                  Math.round(Math.random() * Math.ceil(nvaAvgDiff));
+              }
+              if (item.va.cts[i] === 0) {
+                item.va.cts[i] =
+                  Math.ceil(vaMean) +
+                  Math.round(Math.random() * Math.ceil(vaAvgDiff));
+              }
             }
           }
 
@@ -116,6 +161,24 @@ export const tablectSlice = createSlice({
           item.va.average = Math.round(
             item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length
           );
+          // const nva_ct1 = nva_time;
+          // const va_ct1 = va_time;
+          // for (let i = 1; i < item.nva.cts.length; i++) {
+          //   if (item.nva.cts[i] === 0) {
+          //     item.nva.cts[i] = nva_ct1 + Math.floor(Math.random() * 3);
+          //   }
+          //   if (item.va.cts[i] === 0) {
+          //     item.va.cts[i] = va_ct1 + Math.floor(Math.random() * 3);
+          //   }
+          // }
+
+          // item.nva.average = Math.round(
+          //   item.nva.cts.reduce((sum, val) => sum + val, 0) /
+          //     item.nva.cts.length
+          // );
+          // item.va.average = Math.round(
+          //   item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length
+          // );
         }
       }
     },
@@ -136,10 +199,7 @@ export const tablectSlice = createSlice({
   },
 });
 
-export const {
-  setTablectData,
-  setActiveColId,
-  setUpdateTablect,
-} = tablectSlice.actions;
+export const { setTablectData, setActiveColId, setUpdateTablect } =
+  tablectSlice.actions;
 
 export default tablectSlice.reducer;
