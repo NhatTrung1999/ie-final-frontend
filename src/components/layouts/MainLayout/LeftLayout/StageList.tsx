@@ -4,7 +4,10 @@ import { Button, Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 
 import type { ITablectData } from '../../../../types';
-import { setTablectData } from '../../../../features/tablect/tablectSlice';
+import {
+  setActiveColId,
+  setTablectData,
+} from '../../../../features/tablect/tablectSlice';
 import {
   getVideo,
   setActiveItemId,
@@ -17,6 +20,8 @@ import stagelistApi from '../../../../services/api/stagelistApi';
 import {
   setCurrentTime,
   setDuration,
+  setIsPlaying,
+  setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 
 const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
@@ -109,7 +114,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         return;
       }
       await stagelistApi.deleteVideo(id);
-      await dispatch(getVideo(search || {}))
+      await dispatch(getVideo(search || {}));
       toast.success('Delete successful!');
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -124,7 +129,9 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     toast(
       ({ closeToast }) => (
         <Div className="flex flex-col gap-2 justify-center flex-1 items-center">
-          <Div className="text-lg text-center">Do you want to this data?</Div>
+          <Div className="text-lg text-center">
+            Do you want to delete this data?
+          </Div>
           <Div className="flex items-center justify-center gap-2">
             <Button
               handleClick={() => {
@@ -193,8 +200,11 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                   dispatch(setDuration(0));
                 } else {
                   dispatch(setActiveItemId(item.id));
-                };
+                }
                 handleSelectedItem(item);
+                dispatch(setActiveColId(null));
+                dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+                dispatch(setIsPlaying(false));
               }}
             >
               <Div className="text-lg font-medium">{item.video_name}</Div>

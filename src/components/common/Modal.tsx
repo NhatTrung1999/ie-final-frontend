@@ -4,9 +4,11 @@ import type { IFormModal } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useRef, useState } from 'react';
 import {
+  getVideo,
   setFormValues,
   uploadVideo,
 } from '../../features/stagelist/stagelistSlice';
+import { toast } from 'react-toastify';
 
 const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const {
@@ -20,7 +22,9 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
     },
   });
   const { user } = useAppSelector((state) => state.auth);
-  const { formValues } = useAppSelector((state) => state.stagelist);
+  const { formValues, search, error } = useAppSelector(
+    (state) => state.stagelist
+  );
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -37,29 +41,47 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
     }
   }, [formValues, setValue]);
 
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error);
+  //     setUploadProgress(0)
+  //     return 
+  //   }
+  // }, [error]);
+
   const onSubmit: SubmitHandler<IFormModal> = async (data) => {
     // console.log(user);
     // abortControllerRef.current = new AbortController();
     abortControllerRef.current = new AbortController();
     const { date, season, stage, area, article, video } = data;
-    dispatch(setFormValues({ date, season, stage, area, article }));
-    const uploadResult = await dispatch(
-      uploadVideo({
-        payload: {
-          date,
-          season,
-          stage,
-          area,
-          article,
-          video,
-          created_by: user?.account || 'unknown',
-          signal: abortControllerRef.current.signal,
-        },
-        onProgress: (progress: number) => setUploadProgress(progress),
-      })
-    );
-    if (uploadVideo.fulfilled.match(uploadResult)) {
-      setIsOpen?.(false);
+    if (video.length > 5) {
+      toast.warn('Maximum 5 videos!');
+      return;
+    } else {
+      dispatch(setFormValues({ date, season, stage, area, article }));
+      const uploadResult = await dispatch(
+        uploadVideo({
+          payload: {
+            date,
+            season,
+            stage,
+            area,
+            article,
+            video,
+            created_by: user?.account || 'unknown',
+            signal: abortControllerRef.current.signal,
+          },
+          onProgress: (progress: number) => setUploadProgress(progress),
+        })
+      );
+
+      if (uploadVideo.fulfilled.match(uploadResult)) {
+        setIsOpen?.(false);
+        dispatch(getVideo(search || {}));
+      } else {
+        console.log(error);
+        toast.error(error)
+      }
     }
   };
 
@@ -77,7 +99,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
         <Div className="relative bg-white rounded-lg shadow-sm">
           <Div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
             <h3 className="text-xl font-semibold text-gray-900">
-              Modal upload video
+              Modal Upload Video
             </h3>
             <Button
               type="button"

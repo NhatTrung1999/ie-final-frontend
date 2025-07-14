@@ -66,7 +66,6 @@ const ControlPanel = ({
     if(isPlaying) {
       toast.warn('Cannot select status while the video is playing!');
       return;
-
     }
 
     const newHistoryPlayback: IHistoryPlayback = {
@@ -108,7 +107,7 @@ const ControlPanel = ({
       style={{ height: controlPanelHeight }}
     >
       <CardHeader title="Control Panel" />
-      <Div className=" flex-1 flex flex-col justify-between p-1 gap-1">
+      <Div className={`flex-1 flex flex-col justify-between p-1 gap-1 ${!activeColId ? 'opacity-50': ''}`}>
         <Div className="flex-1 flex items-center gap-1">
           <Div className="bg-gray-400 text-center flex-1 p-1 rounded-md text-lg font-semibold text-white">
             {formatTime(currentTime)}

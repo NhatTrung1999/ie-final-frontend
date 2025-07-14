@@ -26,6 +26,8 @@ import {
 import {
   setCurrentTime,
   setDuration,
+  setIsPlaying,
+  setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
 import axiosConfig from '../../../../services/axiosConfig';
@@ -93,13 +95,15 @@ const TableCT = ({
     if (activeItemId === item.id_video) {
       dispatch(setVideoPath(''));
       dispatch(setActiveItemId(null));
-      dispatch(setActiveColId(null));
       dispatch(setCurrentTime(0));
       dispatch(setDuration(0));
     } else {
       dispatch(setVideoPath(item.video_path as string));
       dispatch(setActiveItemId(item.id_video));
     }
+    dispatch(setActiveColId(null));
+    dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+    dispatch(setIsPlaying(false));
   };
 
   const handleSaveClick = (
@@ -153,7 +157,7 @@ const TableCT = ({
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
       confirm: user?.account || '',
-      video_path: item.video_path
+      video_path: item.video_path,
     }));
 
     await dispatch(createTableCt(confirmTablect));
@@ -177,7 +181,7 @@ const TableCT = ({
           '/export-excel/export-excel-time-study',
           {
             responseType: 'blob',
-            params: {...search}
+            params: { ...search },
           }
         );
 
@@ -207,7 +211,7 @@ const TableCT = ({
           '/export-excel/export-excel-lsa',
           {
             responseType: 'blob',
-            params: search
+            params: search,
           }
         );
 

@@ -122,7 +122,7 @@ export const uploadVideo = createAsyncThunk(
       if (error.name === 'AxiosError' && error.code === 'ERR_CANCELED') {
         return rejectWithValue('Upload canceled');
       }
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response.data.message || 'Upload failed!');
     }
   }
 );

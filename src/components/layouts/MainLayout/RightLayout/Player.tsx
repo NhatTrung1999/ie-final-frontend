@@ -14,6 +14,8 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
 
   const dispatch = useAppDispatch();
 
+  console.log(isPlaying);
+
   return (
     <Div className="bg-black" style={{ height: playerHeight }}>
       <ReactPlayer
@@ -23,12 +25,13 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         style={{ objectFit: 'contain' }}
         width={'100%'}
         height={playerHeight}
-        controls
+        // controls
         muted
         onDuration={(duration: number) => dispatch(setDuration(duration))}
-        onProgress={(state: { playedSeconds: number }) =>
-          dispatch(setCurrentTime(Math.floor(state.playedSeconds)))
-        }
+        onProgress={(state: { playedSeconds: number }) => {
+          // console.log(state.playedSeconds);
+          dispatch(setCurrentTime(Math.floor(state.playedSeconds)));
+        }}
         progressInterval={10}
       />
     </Div>
