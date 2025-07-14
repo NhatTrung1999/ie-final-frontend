@@ -43,7 +43,7 @@ const ControlPanel = ({
     if (!isPlaying) {
       dispatch(setStartTime(currentTime));
       dispatch(setIsPlaying(true));
-      // console.log('startTime: ', startTime);
+      console.log('startTime: ', startTime);
     } else {
       // console.log('endTime', currentTime);
       dispatch(setStopTime(currentTime));
@@ -63,7 +63,7 @@ const ControlPanel = ({
 
   const handleClickTypes = (type: 'NVA' | 'VA' | 'SKIP') => {
     // console.log(activeItemId);
-    if(isPlaying) {
+    if (isPlaying) {
       toast.warn('Cannot select status while the video is playing!');
       return;
     }
@@ -83,11 +83,10 @@ const ControlPanel = ({
 
   const handleClickDone = () => {
     if (activeColId && activeItemId) {
-      if(isPlaying) {
-      toast.warn('Cannot done while the video is playing!');
-      return;
-
-    }
+      if (isPlaying) {
+        toast.warn('Cannot done while the video is playing!');
+        return;
+      }
       const [id_video, col_index] = activeColId.split('-').map(Number);
       dispatch(
         setUpdateTablect({
@@ -107,7 +106,11 @@ const ControlPanel = ({
       style={{ height: controlPanelHeight }}
     >
       <CardHeader title="Control Panel" />
-      <Div className={`flex-1 flex flex-col justify-between p-1 gap-1 ${!activeColId ? 'opacity-50': ''}`}>
+      <Div
+        className={`flex-1 flex flex-col justify-between p-1 gap-1 ${
+          !activeColId ? 'opacity-50' : ''
+        }`}
+      >
         <Div className="flex-1 flex items-center gap-1">
           <Div className="bg-gray-400 text-center flex-1 p-1 rounded-md text-lg font-semibold text-white">
             {formatTime(currentTime)}

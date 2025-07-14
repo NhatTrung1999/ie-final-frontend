@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useEffect, useRef, useState } from 'react';
 import {
   getVideo,
+  resetError,
+  resetMessage,
   setFormValues,
   uploadVideo,
 } from '../../features/stagelist/stagelistSlice';
@@ -22,7 +24,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
     },
   });
   const { user } = useAppSelector((state) => state.auth);
-  const { formValues, search, error } = useAppSelector(
+  const { formValues, search, error, message } = useAppSelector(
     (state) => state.stagelist
   );
   const [uploadProgress, setUploadProgress] = useState<number>(0);
@@ -30,6 +32,11 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
 
   const dispatch = useAppDispatch();
   // const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    dispatch(resetError());
+    dispatch(resetMessage());
+  }, [dispatch]);
 
   useEffect(() => {
     if (formValues) {
@@ -41,13 +48,22 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
     }
   }, [formValues, setValue]);
 
-  // useEffect(() => {
-  //   if (error) {
-  //     toast.error(error);
-  //     setUploadProgress(0)
-  //     return 
-  //   }
-  // }, [error]);
+  useEffect(() => {
+    if (error) {
+      toast.dismiss();
+      toast.error(error);
+      setUploadProgress(0);
+      return;
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (message) {
+      toast.dismiss();
+      setUploadProgress(0);
+      toast.success(message);
+    }
+  }, [message]);
 
   const onSubmit: SubmitHandler<IFormModal> = async (data) => {
     // console.log(user);
@@ -78,9 +94,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
       if (uploadVideo.fulfilled.match(uploadResult)) {
         setIsOpen?.(false);
         dispatch(getVideo(search || {}));
-      } else {
-        console.log(error);
-        toast.error(error)
+        dispatch(resetMessage());
       }
     }
   };
@@ -88,9 +102,11 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
   const handleCancel = () => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
-      setUploadProgress(0);
-      setIsOpen?.(false);
     }
+    setIsOpen?.(false);
+    setUploadProgress(0);
+    dispatch(resetError());
+    dispatch(resetMessage());
   };
 
   return (
@@ -103,7 +119,11 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
             </h3>
             <Button
               type="button"
-              handleClick={() => setIsOpen?.(false)}
+              handleClick={() => {
+                dispatch(resetError());
+                dispatch(resetMessage());
+                setIsOpen?.(false);
+              }}
               className="cursor-pointer end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
             >
               <svg

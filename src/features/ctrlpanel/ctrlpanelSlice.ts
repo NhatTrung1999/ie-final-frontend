@@ -29,6 +29,7 @@ const ctrlpanelSlice = createSlice({
   initialState,
   reducers: {
     setIsPlaying: (state, action: PayloadAction<boolean>) => {
+      console.log(action.payload);
       state.isPlaying = action.payload;
     },
     setDuration: (state, action: PayloadAction<number>) => {

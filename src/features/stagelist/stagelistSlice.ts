@@ -28,6 +28,7 @@ interface IStageListState {
   stagelist: IStageList[];
   isLoading: boolean;
   error: string | null;
+  message: string | null;
   videoPath: string;
   activeTabId: string;
   activeItemId: number | null;
@@ -63,6 +64,7 @@ const initialState: IStageListState = {
   ],
   isLoading: false,
   error: null,
+  message: null,
   videoPath: '',
   activeTabId: 'CUTTING',
   activeItemId: null,
@@ -117,8 +119,10 @@ export const uploadVideo = createAsyncThunk(
         onProgress,
         signal
       );
+      // console.log(message);
       return { message, data };
     } catch (error: any) {
+      // console.log(error.response.data.message);
       if (error.name === 'AxiosError' && error.code === 'ERR_CANCELED') {
         return rejectWithValue('Upload canceled');
       }
@@ -179,6 +183,12 @@ const stagelistSlice = createSlice({
     setSearch: (state, action: PayloadAction<ISearch>) => {
       state.search = { ...action.payload };
     },
+    resetError: (state) => {
+      state.error = null;
+    },
+    resetMessage: (state) => {
+      state.message = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -188,6 +198,8 @@ const stagelistSlice = createSlice({
       })
       .addCase(uploadVideo.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.error = null;
+        state.message = action.payload.message;
         const payload = action.payload.data;
         payload.forEach((item: IStageListData) => {
           const stagelist = state.stagelist.find(
@@ -202,9 +214,11 @@ const stagelistSlice = createSlice({
       })
       .addCase(uploadVideo.rejected, (state, action) => {
         state.isLoading = false;
-        if (action.payload !== 'Upload canceled') {
-          state.error = action.payload as string;
-        }
+        // if (action.payload !== 'Upload canceled') {
+        // console.log(action.payload);
+        state.error = action.payload as string;
+        // }
+        // st
       });
 
     builder
@@ -233,6 +247,8 @@ export const {
   setActiveItemId,
   setFormValues,
   setSearch,
+  resetError,
+  resetMessage,
 } = stagelistSlice.actions;
 
 export default stagelistSlice.reducer;

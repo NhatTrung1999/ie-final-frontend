@@ -26,7 +26,6 @@ import {
 import {
   setCurrentTime,
   setDuration,
-  setIsPlaying,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
@@ -103,7 +102,6 @@ const TableCT = ({
     }
     dispatch(setActiveColId(null));
     dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
-    dispatch(setIsPlaying(false));
   };
 
   const handleSaveClick = (
