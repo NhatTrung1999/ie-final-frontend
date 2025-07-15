@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { CardHeader, Modal } from '../../../common';
+import { CardHeader, Modal, ModalConfirm } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 
@@ -29,6 +29,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   const startX = useRef<number>(0);
   const scrollLeftStart = useRef<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenDel, setIsOpenDel] = useState<boolean>(false);
+  const [idDel, setIdDel] = useState<number | null>(null);
 
   const { stagelist, activeItemId, activeTabId, search } = useAppSelector(
     (state) => state.stagelist
@@ -125,33 +127,35 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     id: number
   ) => {
     e.stopPropagation();
-    toast(
-      ({ closeToast }) => (
-        <Div className="flex flex-col gap-2 justify-center flex-1 items-center">
-          <Div className="text-lg text-center">
-            Do you want to delete this data?
-          </Div>
-          <Div className="flex items-center justify-center gap-2">
-            <Button
-              handleClick={() => {
-                handleConfirm(id);
-                toast.dismiss();
-              }}
-              className="bg-blue-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
-            >
-              Confirm
-            </Button>
-            <Button
-              handleClick={closeToast}
-              className="bg-red-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
-            >
-              Close
-            </Button>
-          </Div>
-        </Div>
-      ),
-      { autoClose: false, closeButton: false, position: 'top-center' }
-    );
+    setIsOpenDel(true);
+    setIdDel(id);
+    // toast(
+    //   ({ closeToast }) => (
+    //     <Div className="flex flex-col gap-2 justify-center flex-1 items-center">
+    //       <Div className="text-lg text-center">
+    //         Do you want to delete this data?
+    //       </Div>
+    //       <Div className="flex items-center justify-center gap-2">
+    //         <Button
+    //           handleClick={() => {
+    //             handleConfirm(id);
+    //             toast.dismiss();
+    //           }}
+    //           className="bg-blue-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
+    //         >
+    //           Confirm
+    //         </Button>
+    //         <Button
+    //           handleClick={closeToast}
+    //           className="bg-red-500 px-2 py-1 text-white rounded-md cursor-pointer font-semibold"
+    //         >
+    //           Close
+    //         </Button>
+    //       </Div>
+    //     </Div>
+    //   ),
+    //   { autoClose: false, closeButton: false, position: 'top-center' }
+    // );
   };
 
   return (
@@ -230,6 +234,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       </Div>
 
       {isOpen && <Modal setIsOpen={setIsOpen} />}
+      {/* {isOpenDel && <ModalConfirm handleConfirm={handleConfirm} id={idDel} />} */}
     </>
   );
 };

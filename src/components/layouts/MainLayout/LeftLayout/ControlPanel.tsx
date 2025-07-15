@@ -17,6 +17,7 @@ import { formatTime } from '../../../../utils/formatTime';
 import { CardHeader } from '../../../common';
 import { Button, Div, Input } from '../../../ui';
 import { FaPlay, FaCheck, FaPause } from 'react-icons/fa';
+import { debounce } from '../../../../utils/debounce';
 
 const ControlPanel = ({
   controlPanelHeight,
@@ -53,7 +54,15 @@ const ControlPanel = ({
     }
   };
 
+  const debounceToast = debounce(() => {
+    toast.warn("You can't rewind while the video is playing!");
+  }, 300);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isPlaying) {
+      debounceToast();
+      return;
+    }
     const newTime = Number(e.target.value);
     dispatch(setCurrentTime(newTime));
     if (playerRef.current) {
