@@ -117,6 +117,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       await stagelistApi.deleteVideo(id);
       await dispatch(getVideo(search || {}));
       toast.success('Delete successful!');
+      setIsOpenDel(false)
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -128,7 +129,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   ) => {
     e.stopPropagation();
     setIsOpenDel(true);
-    setIdDel(id);
+    setIdDel(id)
+    // setIdDel(id);
     // toast(
     //   ({ closeToast }) => (
     //     <Div className="flex flex-col gap-2 justify-center flex-1 items-center">
@@ -234,7 +236,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       </Div>
 
       {isOpen && <Modal setIsOpen={setIsOpen} />}
-      {/* {isOpenDel && <ModalConfirm handleConfirm={handleConfirm} id={idDel} />} */}
+      {isOpenDel && <ModalConfirm idDel={idDel as number} setIsOpenDel={setIsOpenDel} handleConfirm={handleConfirm} />}
     </>
   );
 };
