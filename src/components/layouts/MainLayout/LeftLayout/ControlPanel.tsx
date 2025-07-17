@@ -44,7 +44,11 @@ const ControlPanel = ({
     if (!isPlaying) {
       dispatch(setStartTime(currentTime));
       dispatch(setIsPlaying(true));
-      console.log('startTime: ', startTime);
+      if (playerRef.current) {
+        playerRef.current.seekTo(currentTime, 'seconds');
+        playerRef.current.getInternalPlayer().play();
+      }
+      // console.log('startTime: ', startTime);
     } else {
       // console.log('endTime', currentTime);
       dispatch(setStopTime(currentTime));

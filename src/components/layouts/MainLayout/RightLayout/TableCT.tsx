@@ -26,6 +26,7 @@ import {
 import {
   setCurrentTime,
   setDuration,
+  setIsPlaying,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
@@ -102,6 +103,7 @@ const TableCT = ({
     }
     dispatch(setActiveColId(null));
     dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+    dispatch(setIsPlaying(false));
   };
 
   const handleSaveClick = (
@@ -109,11 +111,10 @@ const TableCT = ({
     item: ITablectData
   ) => {
     e.stopPropagation();
-    const tablectItem = tablect.find((item) => item.id_video === activeItemId);
-    if (!tablectItem) return;
 
-    const isCheckValueCT1 =
-      tablectItem.nva.cts[0] === 0 && tablectItem.va.cts[0] === 0;
+    if (!item) return;
+
+    const isCheckValueCT1 = item.nva.cts[0] === 0 && item.va.cts[0] === 0;
     if (isCheckValueCT1) {
       toast.warn('Please enter your value CT1');
       return;

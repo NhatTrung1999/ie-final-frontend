@@ -14,8 +14,6 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
 
   const dispatch = useAppDispatch();
 
-  // console.log(isPlaying);
-
   return (
     <Div className="bg-black" style={{ height: playerHeight }}>
       <ReactPlayer
@@ -28,8 +26,6 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         controls
         muted
         onDuration={(duration: number) => dispatch(setDuration(duration))}
-        onPlay={() => console.log('Video is playing')}
-        onPause={() => console.log('Video is pause')}
         onProgress={(state: { playedSeconds: number }) => {
           // console.log(state.playedSeconds);
           dispatch(setCurrentTime(Math.floor(state.playedSeconds)));

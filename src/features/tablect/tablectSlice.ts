@@ -48,6 +48,27 @@ export const getTablect = createAsyncThunk(
   }
 );
 
+export const saveTablect = createAsyncThunk(
+  'tablect/save-tablect',
+  async (
+    payload: {
+      id_video: number;
+      col_index: number;
+      nva_time: number;
+      va_time: number;
+      is_update_all_cts?: boolean;
+    },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      await tablectApi.saveTablect(payload);
+      await dispatch(getTablect({}));
+    } catch (error) {
+      return rejectWithValue(error || 'Update error!');
+    }
+  }
+);
+
 export const deleteTablect = createAsyncThunk(
   'tablect/delete-tablect',
   async (id: number, { rejectWithValue }) => {

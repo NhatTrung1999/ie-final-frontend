@@ -6,7 +6,7 @@ const tablectApi = {
     await axiosConfig.post('/tablect', payload);
   },
   getTablect: async (payload: ISearch): Promise<ITablectPayload[]> => {
-    const response = await axiosConfig.get('/tablect', {params: payload});
+    const response = await axiosConfig.get('/tablect', { params: payload });
     return response.data.data;
   },
   deleteTablect: async (id: number) => {
@@ -14,6 +14,19 @@ const tablectApi = {
       await axiosConfig.delete(`/tablect/${id}`);
     } catch (error) {
       throw error;
+    }
+  },
+  saveTablect: async (payload: {
+    id_video: number;
+    col_index: number;
+    nva_time: number;
+    va_time: number;
+    is_update_all_cts?: boolean;
+  }) => {
+    try {
+      await axiosConfig.post('/tablect/save', payload);
+    } catch (error) {
+      throw error
     }
   },
 };

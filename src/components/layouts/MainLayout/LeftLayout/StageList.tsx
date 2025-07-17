@@ -20,6 +20,7 @@ import stagelistApi from '../../../../services/api/stagelistApi';
 import {
   setCurrentTime,
   setDuration,
+  setIsPlaying,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 
@@ -209,6 +210,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 handleSelectedItem(item);
                 dispatch(setActiveColId(null));
                 dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+                dispatch(setIsPlaying(false))
               }}
             >
               <Div className="text-lg font-medium">{item.video_name}</Div>
