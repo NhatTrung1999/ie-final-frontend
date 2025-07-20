@@ -19,14 +19,14 @@ const HistoryPlayback = ({
 }) => {
   const { playerRef } = usePlayer();
   const { history_playback } = useAppSelector((state) => state.historyPlayback);
-  const { activeItemId } = useAppSelector((state) => state.stagelist);
+  const { activeItemId, search } = useAppSelector((state) => state.stagelist);
   const { tablect } = useAppSelector((state) => state.tablect);
   // const { types } = useAppSelector((state) => state.ctrlpanel);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getHistoryPlaybacks = async () => {
-      await dispatch(getHistoryPlayback());
+      await dispatch(getHistoryPlayback(search || {}));
     };
     getHistoryPlaybacks();
   }, [dispatch]);

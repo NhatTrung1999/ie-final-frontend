@@ -54,27 +54,30 @@ const LoginLayout = () => {
 
   return (
     <Div
-      style={{ height, width }}
-      className="border-2 flex justify-center items-center bg-gray-100"
+      // style={{ height, width }}
+      className="border-2 flex justify-center items-center bg-[#F3F4F6] h-screen"
     >
       <Div
-        style={{ height: height - 400, width: width - 600 }}
-        className="rounded-md flex p-3 shadow-2xs bg-white"
+        // style={{ height: height - 400, width: width - 600 }}
+        className="rounded-md flex p-3 shadow-2xs bg-[#F9FAFB] w-4xl h-[500px]"
       >
         <Div className="flex-1 flex justify-center items-center">
           <Lottie animationData={loadingData} />
         </Div>
         <Form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex-1 flex flex-col justify-evenly items-center px-5 bg-gray-200 rounded-md"
+          className="flex-1 flex flex-col justify-evenly items-center px-5 bg-white rounded-md border-[#E5E7EB] shadow-2xs"
         >
-          <Div className="text-3xl font-bold text-blue-500">Login</Div>
+          <Div className="text-5xl font-bold text-blue-700">Login</Div>
           <Div className="w-full">
-            <Label htmlFor="account">Account</Label>
+            <Label htmlFor="account" className="text-gray-700">
+              Account
+            </Label>
             <Input
               id="account"
               autoComplete="off"
               className="w-full"
+              placeholder="Enter your account..."
               ariaInvalid={errors.account ? 'true' : 'false'}
               {...register('account', { required: true })}
             />
@@ -85,12 +88,15 @@ const LoginLayout = () => {
             )}
           </Div>
           <Div className="w-full">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-gray-700">
+              Password
+            </Label>
             <Input
               id="password"
               autoComplete="off"
               className="w-full"
-              type='password'
+              type="password"
+              placeholder="Enter your password..."
               {...register('password', { required: true })}
               ariaInvalid={errors.password ? 'true' : 'false'}
             />
@@ -101,7 +107,9 @@ const LoginLayout = () => {
             )}
           </Div>
           <Div className="w-full">
-            <Label htmlFor="factory">Factory</Label>
+            <Label htmlFor="factory" className="text-gray-700">
+              Factory
+            </Label>
             <Select id="factory" {...register('factory')}>
               {dataFac.map((item, index) => (
                 <Option key={index} value={item.value} name={item.name} />
@@ -110,7 +118,7 @@ const LoginLayout = () => {
           </Div>
           <Button
             type="submit"
-            className="w-full cursor-pointer bg-blue-500 p-2 rounded-md text-lg text-white font-semibold"
+            className="w-full cursor-pointer bg-[#3B82F6] p-2 rounded-md text-lg text-white font-semibold"
           >
             {isLoading ? 'Loading...' : 'Login'}
           </Button>

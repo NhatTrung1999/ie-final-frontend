@@ -142,6 +142,12 @@ const TableCT = ({
     item: ITablectData
   ) => {
     e.stopPropagation();
+    console.log(item);
+
+    if (item.confirm === '') {
+      toast.warn('Please confirm before delete!');
+      return;
+    }
     await dispatch(deleteTablect(item.id_video));
     await dispatch(setActiveItemId(null));
     await dispatch(setActiveColId(null));

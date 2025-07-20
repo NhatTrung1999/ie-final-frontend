@@ -27,7 +27,7 @@ const Input = ({
   return (
     <input
       type={type}
-      className={`outline-none px-2 py-1 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 bg-white ${className}`}
+      className={`outline-none px-3 py-1.5 border border-[#D1D5DB] rounded-lg text-gray-900 placeholder-gray-300 bg-white ${className}`}
       style={style}
       value={value}
       id={id}
