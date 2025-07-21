@@ -10,7 +10,7 @@ const AppLayout = () => {
   const mainHeight = height - headerHeight;
 
   return (
-    <Div style={{ height }} className="bg-[#ccc] flex flex-col gap-2">
+    <Div style={{ height }} className="bg-[#efefef] flex flex-col gap-2">
       <HeaderLayout headerHeight={headerHeight} />
       <MainLayout mainHeight={mainHeight} mainWidth={width} />
     </Div>

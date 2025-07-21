@@ -180,7 +180,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
             <Div
               key={item.name}
               className={`${
-                item.name === activeTabId ? 'bg-amber-200' : ''
+                item.name === activeTabId ? 'bg-white' : ''
               } px-2 py-1 rounded-md font-semibold`}
               onClick={() => {
                 dispatch(setActiveItemId(null));
@@ -191,7 +191,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
             </Div>
           ))}
         </Div>
-        <Div className=" flex-1 overflow-y-auto bg-yellow-200 flex flex-col gap-1 rounded-b-md p-1">
+        <Div className=" flex-1 overflow-y-auto bg-[#F5F7FA] flex flex-col gap-1 rounded-b-md p-1">
           {stagelistItem[0].data.map((item, index) => (
             <Div
               key={index}

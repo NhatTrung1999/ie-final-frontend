@@ -48,7 +48,7 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
 
   return (
     <Header style={{ height: headerHeight }} className="px-2 pt-2">
-      <Div className="bg-teal-400 h-full rounded-md flex items-center justify-between px-2">
+      <Div className="bg-[#2C3E50] h-full rounded-md flex items-center justify-between px-2">
         <Div className="text-2xl font-semibold text-white text-shadow-2xs">
           IE Video CT System
         </Div>
@@ -80,7 +80,7 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
           </Select>
           <Input placeholder="Search article..." {...register('article')} />
           <Button
-            className="px-2 py-1 bg-blue-500 rounded-md text-white font-semibold cursor-pointer"
+            className="px-3 py-1.5 bg-[#A3C9A8] rounded-md text-white font-semibold cursor-pointer"
             type="submit"
           >
             Search

@@ -19,7 +19,7 @@ const CardHeader = ({
   handleExportExcelLSA?: () => void
 }) => {
   return (
-    <Div className="bg-amber-400 flex justify-between items-center p-3 rounded-t-md">
+    <Div className="bg-[#2C3E50] flex justify-between items-center p-3 rounded-t-md">
       <Div className="text-lg font-semibold text-white">{title}</Div>
       {isShowIcon && (
         <Button

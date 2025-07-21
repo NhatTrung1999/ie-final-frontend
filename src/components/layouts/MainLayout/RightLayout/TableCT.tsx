@@ -130,6 +130,8 @@ const TableCT = ({
       })
     );
 
+    console.log(tablect);
+
     dispatch(setActiveItemId(null));
     dispatch(setActiveColId(null));
     dispatch(setVideoPath(''));
@@ -255,7 +257,7 @@ const TableCT = ({
         style={{ maxWidth: tableCtWidth - 24 }}
       >
         <table className="table-auto w-full min-w-max">
-          <thead className="sticky top-0 bg-white z-10 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]">
+          <thead className="sticky top-0 bg-gray-300 z-10 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]">
             <tr>
               {header.map((item, index) => (
                 <React.Fragment key={index}>
