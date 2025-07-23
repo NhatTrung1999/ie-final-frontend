@@ -11,6 +11,7 @@ import { getHistoryPlayback } from '../../features/historyplayback/historyPlayba
 const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
   const { register, handleSubmit, setValue } = useForm<ISearch>();
   const { search } = useAppSelector((state) => state.stagelist);
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [isLogout, setIsLogout] = useState(false);
 
@@ -92,7 +93,7 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
             onClick={handleIsLogout}
           >
             <Div className="text-lg font-semibold text-white select-none">
-              Administrator
+              {user?.name}
             </Div>
             <Div>
               <svg
