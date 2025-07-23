@@ -23,7 +23,7 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         style={{ objectFit: 'contain' }}
         width={'100%'}
         height={playerHeight}
-        controls
+        // controls
         muted
         onDuration={(duration: number) => dispatch(setDuration(duration))}
         onProgress={(state: { playedSeconds: number }) => {
