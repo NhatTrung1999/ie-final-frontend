@@ -27,6 +27,7 @@ import {
   setCurrentTime,
   setDuration,
   setIsPlaying,
+  setLastElapsedTime,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
@@ -103,6 +104,7 @@ const TableCT = ({
     }
     dispatch(setActiveColId(null));
     dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+    dispatch(setLastElapsedTime(0));
     dispatch(setIsPlaying(false));
   };
 
@@ -129,8 +131,6 @@ const TableCT = ({
         is_update_all_cts: true,
       })
     );
-
-    console.log(tablect);
 
     dispatch(setActiveItemId(null));
     dispatch(setActiveColId(null));
@@ -273,9 +273,14 @@ const TableCT = ({
                   <th className="border border-gray-500 border-t-0 px-2 py-1">
                     {item.progressStagePartName}
                   </th>
-                  <th className="border border-gray-500 border-t-0 px-2 py-1">{item.type}</th>
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">
+                    {item.type}
+                  </th>
                   {Array.from({ length: item.cts }).map((_, i) => (
-                    <th key={i} className="border border-gray-500 border-t-0 px-2 py-1">
+                    <th
+                      key={i}
+                      className="border border-gray-500 border-t-0 px-2 py-1"
+                    >
                       CT{i + 1}
                     </th>
                   ))}
@@ -303,13 +308,21 @@ const TableCT = ({
                     } cursor-pointer`}
                     onClick={() => handleRowClick(item)}
                   >
-                    <td className="border border-gray-500 text-center border-l-0" rowSpan={2}>
+                    <td
+                      className="border border-gray-500 text-center border-l-0"
+                      rowSpan={2}
+                    >
                       {item.no}
                     </td>
-                    <td className="border border-gray-500 text-center" rowSpan={2}>
+                    <td
+                      className="border border-gray-500 text-center"
+                      rowSpan={2}
+                    >
                       {item.progress_stage_part_name}
                     </td>
-                    <td className="border border-gray-500 text-center">{item.nva?.type}</td>
+                    <td className="border border-gray-500 text-center">
+                      {item.nva?.type}
+                    </td>
                     {item.nva?.cts.map((ct, index) => (
                       <td
                         key={index}
@@ -325,11 +338,19 @@ const TableCT = ({
                         {ct}
                       </td>
                     ))}
-                    <td className="border border-gray-500 text-center">{item.nva?.average}</td>
-                    <td className="border border-gray-500 text-center" rowSpan={2}>
+                    <td className="border border-gray-500 text-center">
+                      {item.nva?.average}
+                    </td>
+                    <td
+                      className="border border-gray-500 text-center"
+                      rowSpan={2}
+                    >
                       {item.confirm}
                     </td>
-                    <td className="border border-gray-500 text-center border-r-0" rowSpan={2}>
+                    <td
+                      className="border border-gray-500 text-center border-r-0"
+                      rowSpan={2}
+                    >
                       {hasAllCTValues(item) ? (
                         <Button
                           className="bg-red-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
@@ -351,15 +372,11 @@ const TableCT = ({
                     className={`${
                       activeItemId === item.id_video ? 'bg-gray-400' : ''
                     } cursor-pointer`}
-                    onClick={() =>
-                      dispatch(
-                        setActiveItemId(
-                          item.id_video === activeItemId ? null : item.id_video
-                        )
-                      )
-                    }
+                    onClick={() => handleRowClick(item)}
                   >
-                    <td className="border border-gray-500 text-center">{item.va?.type}</td>
+                    <td className="border border-gray-500 text-center">
+                      {item.va?.type}
+                    </td>
                     {item.va?.cts.map((ct, index) => (
                       <td
                         key={index}
@@ -375,7 +392,9 @@ const TableCT = ({
                         {ct}
                       </td>
                     ))}
-                    <td className="border border-gray-500 text-center">{item.va?.average}</td>
+                    <td className="border border-gray-500 text-center">
+                      {item.va?.average}
+                    </td>
                   </tr>
                 </Fragment>
               ))}

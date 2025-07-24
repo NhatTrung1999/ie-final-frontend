@@ -90,6 +90,8 @@ const ControlPanel = ({
       created_by: user?.account || 'unknown',
       created_at: new Date().toISOString(),
     };
+
+    console.log(lastElapsedTime);
     dispatch(setTypes({ type, time: lastElapsedTime }));
     dispatch(setHistoryPlayback(newHistoryPlayback));
   };

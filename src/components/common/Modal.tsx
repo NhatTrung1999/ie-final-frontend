@@ -297,7 +297,12 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
               <Div className="flex gap-x-2">
                 <Button
                   type="submit"
-                  className="w-full text-white bg-blue-500 hover:bg-blue-600 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  disabled={uploadProgress > 0 ? true : false}
+                  className={`w-full text-white bg-blue-500  ${
+                    uploadProgress > 0
+                      ? 'hover:cursor-not-allowed'
+                      : 'hover:bg-blue-600'
+                  } cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 text-center`}
                 >
                   {uploadProgress > 0
                     ? `Uploading...${uploadProgress}%`

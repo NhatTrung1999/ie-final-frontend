@@ -21,6 +21,7 @@ import {
   setCurrentTime,
   setDuration,
   setIsPlaying,
+  setLastElapsedTime,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 
@@ -118,7 +119,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       await stagelistApi.deleteVideo(id);
       await dispatch(getVideo(search || {}));
       toast.success('Delete successful!');
-      setIsOpenDel(false)
+      setIsOpenDel(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -130,7 +131,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   ) => {
     e.stopPropagation();
     setIsOpenDel(true);
-    setIdDel(id)
+    setIdDel(id);
     // setIdDel(id);
     // toast(
     //   ({ closeToast }) => (
@@ -162,8 +163,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   };
 
   const handleRefresh = async () => {
-    await dispatch(getVideo(search || {}))
-  }
+    await dispatch(getVideo(search || {}));
+  };
 
   return (
     <>
@@ -171,7 +172,13 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         className="bg-white shadow-2xs rounded-md flex flex-col"
         style={{ height: stageListHeight }}
       >
-        <CardHeader title="StageList" isShowIcon={true} isShowIconRefresh={true} setIsOpen={setIsOpen} handleRefresh={handleRefresh} />
+        <CardHeader
+          title="StageList"
+          isShowIcon={true}
+          isShowIconRefresh={true}
+          setIsOpen={setIsOpen}
+          handleRefresh={handleRefresh}
+        />
         <Div
           ref={scrollRef}
           className="overflow-x-hidden px-3 flex flex-nowrap gap-3 py-1 cursor-grab bg-[#aaa] select-none"
@@ -214,7 +221,8 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 handleSelectedItem(item);
                 dispatch(setActiveColId(null));
                 dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
-                dispatch(setIsPlaying(false))
+                dispatch(setLastElapsedTime(0));
+                dispatch(setIsPlaying(false));
               }}
             >
               <Div className="text-lg font-medium">{item.video_name}</Div>
@@ -242,7 +250,13 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       </Div>
 
       {isOpen && <Modal setIsOpen={setIsOpen} />}
-      {isOpenDel && <ModalConfirm idDel={idDel as number} setIsOpenDel={setIsOpenDel} handleConfirm={handleConfirm} />}
+      {isOpenDel && (
+        <ModalConfirm
+          idDel={idDel as number}
+          setIsOpenDel={setIsOpenDel}
+          handleConfirm={handleConfirm}
+        />
+      )}
     </>
   );
 };
