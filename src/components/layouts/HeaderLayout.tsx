@@ -1,12 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Button, Div, Form, Header, Input, Option, Select } from '../ui';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getVideo, setSearch } from '../../features/stagelist/stagelistSlice';
+import {
+  getVideo,
+  setActiveItemId,
+  setSearch,
+  setVideoPath,
+} from '../../features/stagelist/stagelistSlice';
 import { logout } from '../../features/auth/authSlice';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import type { ISearch } from '../../types';
-import { getTablect } from '../../features/tablect/tablectSlice';
+import {
+  getTablect,
+  setActiveColId,
+} from '../../features/tablect/tablectSlice';
 import { getHistoryPlayback } from '../../features/historyplayback/historyPlaybackSlice';
+import {
+  setCurrentTime,
+  setDuration,
+  setIsPlaying,
+  setResetTypes,
+} from '../../features/ctrlpanel/ctrlpanelSlice';
 
 const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
   const { register, handleSubmit, setValue } = useForm<ISearch>();
@@ -40,11 +54,18 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
     dispatch(logout());
   };
 
-  const onSubmit: SubmitHandler<ISearch> = async(data) => {
-    await dispatch(getVideo(data))
-    await dispatch(getTablect(data))
-    await dispatch(getHistoryPlayback(data))
-    await dispatch(setSearch(data))
+  const onSubmit: SubmitHandler<ISearch> = async (data) => {
+    await dispatch(getVideo(data));
+    await dispatch(getTablect(data));
+    await dispatch(getHistoryPlayback(data));
+    await dispatch(setSearch(data));
+    await dispatch(setVideoPath(''));
+    await dispatch(setActiveItemId(null));
+    await dispatch(setCurrentTime(0));
+    await dispatch(setDuration(0));
+    await dispatch(setActiveColId(null));
+    await dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+    await dispatch(setIsPlaying(false));
   };
 
   return (

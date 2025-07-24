@@ -161,13 +161,17 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     // );
   };
 
+  const handleRefresh = async () => {
+    await dispatch(getVideo(search || {}))
+  }
+
   return (
     <>
       <Div
         className="bg-white shadow-2xs rounded-md flex flex-col"
         style={{ height: stageListHeight }}
       >
-        <CardHeader title="StageList" isShowIcon={true} setIsOpen={setIsOpen} />
+        <CardHeader title="StageList" isShowIcon={true} isShowIconRefresh={true} setIsOpen={setIsOpen} handleRefresh={handleRefresh} />
         <Div
           ref={scrollRef}
           className="overflow-x-hidden px-3 flex flex-nowrap gap-3 py-1 cursor-grab bg-[#aaa] select-none"

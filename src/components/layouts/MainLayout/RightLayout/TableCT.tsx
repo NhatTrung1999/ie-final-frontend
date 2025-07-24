@@ -240,6 +240,10 @@ const TableCT = ({
     }
   };
 
+  const handleRefresh = async () => {
+    await dispatch(getTablect(search || {}));
+  };
+
   return (
     <Div
       className="bg-white rounded-md flex flex-col overflow-x-auto"
@@ -248,9 +252,11 @@ const TableCT = ({
       <CardHeader
         title="Table CT"
         isShowButton={true}
+        isShowIconRefresh={true}
         handleConfirm={handleConfirm}
         handleExportExcelTimeStudy={handleExportExcelTimeStudy}
         handleExportExcelLSA={handleExportExcelLSA}
+        handleRefresh={handleRefresh}
       />
       <Div
         className=" flex-1 overflow-x-auto"
@@ -261,25 +267,25 @@ const TableCT = ({
             <tr>
               {header.map((item, index) => (
                 <React.Fragment key={index}>
-                  <th className="border border-t-0 border-l-0 px-2 py-1">
+                  <th className="border border-gray-500 border-t-0 border-l-0 px-2 py-1">
                     {item.no}
                   </th>
-                  <th className="border border-t-0 px-2 py-1">
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">
                     {item.progressStagePartName}
                   </th>
-                  <th className="border border-t-0 px-2 py-1">{item.type}</th>
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">{item.type}</th>
                   {Array.from({ length: item.cts }).map((_, i) => (
-                    <th key={i} className="border border-t-0 px-2 py-1">
+                    <th key={i} className="border border-gray-500 border-t-0 px-2 py-1">
                       CT{i + 1}
                     </th>
                   ))}
-                  <th className="border border-t-0 px-2 py-1">
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">
                     {item.average}
                   </th>
-                  <th className="border border-t-0 px-2 py-1">
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">
                     {item.confirm}
                   </th>
-                  <th className="border border-t-0 border-r-0 px-2 py-1">
+                  <th className="border border-gray-500 border-t-0 border-r-0 px-2 py-1">
                     {item.action}
                   </th>
                 </React.Fragment>
@@ -297,20 +303,20 @@ const TableCT = ({
                     } cursor-pointer`}
                     onClick={() => handleRowClick(item)}
                   >
-                    <td className="border text-center border-l-0" rowSpan={2}>
+                    <td className="border border-gray-500 text-center border-l-0" rowSpan={2}>
                       {item.no}
                     </td>
-                    <td className="border text-center" rowSpan={2}>
+                    <td className="border border-gray-500 text-center" rowSpan={2}>
                       {item.progress_stage_part_name}
                     </td>
-                    <td className="border text-center">{item.nva?.type}</td>
+                    <td className="border border-gray-500 text-center">{item.nva?.type}</td>
                     {item.nva?.cts.map((ct, index) => (
                       <td
                         key={index}
                         onClick={(e) =>
                           handleColumnClick(e, `${item.id_video}-${index}`)
                         }
-                        className={`border text-center ${
+                        className={`border border-gray-500 text-center ${
                           activeColId === `${item.id_video}-${index}`
                             ? 'bg-yellow-200'
                             : ''
@@ -319,11 +325,11 @@ const TableCT = ({
                         {ct}
                       </td>
                     ))}
-                    <td className="border text-center">{item.nva?.average}</td>
-                    <td className="border text-center" rowSpan={2}>
+                    <td className="border border-gray-500 text-center">{item.nva?.average}</td>
+                    <td className="border border-gray-500 text-center" rowSpan={2}>
                       {item.confirm}
                     </td>
-                    <td className="border text-center border-r-0" rowSpan={2}>
+                    <td className="border border-gray-500 text-center border-r-0" rowSpan={2}>
                       {hasAllCTValues(item) ? (
                         <Button
                           className="bg-red-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
@@ -353,14 +359,14 @@ const TableCT = ({
                       )
                     }
                   >
-                    <td className="border text-center">{item.va?.type}</td>
+                    <td className="border border-gray-500 text-center">{item.va?.type}</td>
                     {item.va?.cts.map((ct, index) => (
                       <td
                         key={index}
                         onClick={(e) =>
                           handleColumnClick(e, `${item.id_video}-${index}`)
                         }
-                        className={`border text-center ${
+                        className={`border border-gray-500 text-center ${
                           activeColId === `${item.id_video}-${index}`
                             ? 'bg-yellow-200'
                             : ''
@@ -369,7 +375,7 @@ const TableCT = ({
                         {ct}
                       </td>
                     ))}
-                    <td className="border text-center">{item.va?.average}</td>
+                    <td className="border border-gray-500 text-center">{item.va?.average}</td>
                   </tr>
                 </Fragment>
               ))}
