@@ -88,6 +88,7 @@ const TableCT = ({
         } else {
           dispatch(setActiveColId(colId));
         }
+        dispatch(setIsPlaying(false))
       }
     }
   };
@@ -108,7 +109,7 @@ const TableCT = ({
     dispatch(setIsPlaying(false));
   };
 
-  const handleSaveClick = (
+  const handleDoneClick = (
     e: React.MouseEvent<HTMLButtonElement>,
     item: ITablectData
   ) => {
@@ -139,24 +140,24 @@ const TableCT = ({
     dispatch(setDuration(0));
   };
 
-  const handleDeleteClick = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    item: ITablectData
-  ) => {
-    e.stopPropagation();
-    console.log(item);
+  // const handleDeleteClick = async (
+  //   e: React.MouseEvent<HTMLButtonElement>,
+  //   item: ITablectData
+  // ) => {
+  //   e.stopPropagation();
+  //   console.log(item);
 
-    if (item.confirm === '') {
-      toast.warn('Please confirm before delete!');
-      return;
-    }
-    await dispatch(deleteTablect(item.id_video));
-    await dispatch(setActiveItemId(null));
-    await dispatch(setActiveColId(null));
-    await dispatch(getTablect(search || {}));
-    await dispatch(getHistoryPlayback(search || {}));
-    await dispatch(setVideoPath(''));
-  };
+  //   if (item.confirm === '') {
+  //     toast.warn('Please confirm before delete!');
+  //     return;
+  //   }
+  //   await dispatch(deleteTablect(item.id_video));
+  //   await dispatch(setActiveItemId(null));
+  //   await dispatch(setActiveColId(null));
+  //   await dispatch(getTablect(search || {}));
+  //   await dispatch(getHistoryPlayback(search || {}));
+  //   await dispatch(setVideoPath(''));
+  // };
 
   const handleConfirm = async () => {
     const confirmTablect: ITablectPayload[] = tablect.map((item) => ({
@@ -172,6 +173,11 @@ const TableCT = ({
     await dispatch(getTablect(search || {}));
     await dispatch(getHistoryPlayback(search || {}));
   };
+
+  const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    console.log('save');
+  }
 
   const hasAllCTValues = (item: ITablectData) => {
     return (
@@ -353,17 +359,18 @@ const TableCT = ({
                     >
                       {hasAllCTValues(item) ? (
                         <Button
-                          className="bg-red-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
-                          handleClick={(e) => handleDeleteClick(e, item)}
+                          className="bg-blue-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
+                          // handleClick={(e) => handleDeleteClick(e, item)}
+                          handleClick={(e) => handleSaveClick(e)}
                         >
-                          Delete
+                          Save
                         </Button>
                       ) : (
                         <Button
                           className="bg-green-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
-                          handleClick={(e) => handleSaveClick(e, item)}
+                          handleClick={(e) => handleDoneClick(e, item)}
                         >
-                          Save
+                          Done
                         </Button>
                       )}
                     </td>

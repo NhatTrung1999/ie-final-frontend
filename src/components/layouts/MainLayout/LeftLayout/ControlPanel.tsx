@@ -71,6 +71,7 @@ const ControlPanel = ({
     dispatch(setCurrentTime(newTime));
     if (playerRef.current) {
       playerRef.current.seekTo(newTime, 'seconds');
+      // dispatch(setLastElapsedTime(0))
     }
   };
 
