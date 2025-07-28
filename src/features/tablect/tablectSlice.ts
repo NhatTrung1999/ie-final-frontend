@@ -19,13 +19,25 @@ const initialState: ITablectState = {
   activeColId: null,
 };
 
-export const createTableCt = createAsyncThunk(
+export const confirmTableCt = createAsyncThunk(
   'tablect/create-tablect',
   async (payload: ITablectPayload[], { rejectWithValue }) => {
     try {
       await tablectApi.confirmTablect(payload);
       return 'add success';
     } catch (error: any) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const saveTablect = createAsyncThunk(
+  'tablect/save-tablect',
+  async (payload: ITablectPayload, { rejectWithValue }) => {
+    try {
+      await tablectApi.saveTablect(payload);
+      return 'save success';
+    } catch (error) {
       return rejectWithValue(error);
     }
   }
@@ -48,26 +60,26 @@ export const getTablect = createAsyncThunk(
   }
 );
 
-export const saveTablect = createAsyncThunk(
-  'tablect/save-tablect',
-  async (
-    payload: {
-      id_video: number;
-      col_index: number;
-      nva_time: number;
-      va_time: number;
-      is_update_all_cts?: boolean;
-    },
-    { dispatch, rejectWithValue }
-  ) => {
-    try {
-      await tablectApi.saveTablect(payload);
-      await dispatch(getTablect({}));
-    } catch (error) {
-      return rejectWithValue(error || 'Update error!');
-    }
-  }
-);
+// export const saveTablect = createAsyncThunk(
+//   'tablect/save-tablect',
+//   async (
+//     payload: {
+//       id_video: number;
+//       col_index: number;
+//       nva_time: number;
+//       va_time: number;
+//       is_update_all_cts?: boolean;
+//     },
+//     { dispatch, rejectWithValue }
+//   ) => {
+//     try {
+//       await tablectApi.saveTablect(payload);
+//       await dispatch(getTablect({}));
+//     } catch (error) {
+//       return rejectWithValue(error || 'Update error!');
+//     }
+//   }
+// );
 
 export const deleteTablect = createAsyncThunk(
   'tablect/delete-tablect',

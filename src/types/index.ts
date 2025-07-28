@@ -117,6 +117,7 @@ export interface ITablectData {
     cts: number[];
     average: number;
   };
+  is_save?: boolean;
   confirm: string;
   video_path?: string;
 }
@@ -130,6 +131,7 @@ export interface ITablectPayload {
   va: string;
   confirm: string;
   video_path?: string;
+  is_save?: boolean
 }
 
 export interface IHistoryPlayback {

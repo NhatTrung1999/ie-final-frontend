@@ -2,7 +2,7 @@ import type { IHistoryPlayback, ISearch } from '../../types';
 import axiosConfig from '../axiosConfig';
 
 const historyplaybackApi = {
-  createHistoryPlayback: async (payload: IHistoryPlayback[]) => {
+  saveHistoryPlayback: async (payload: IHistoryPlayback[]) => {
     await axiosConfig.post('/history-playback', payload);
   },
   getHistoryPlayback: async (payload: ISearch) => {

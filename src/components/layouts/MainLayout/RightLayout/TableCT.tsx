@@ -8,9 +8,11 @@ import { CardHeader } from '../../../common';
 import { Button, Div } from '../../../ui';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
-  createTableCt,
+  confirmTableCt,
+  // createTableCt,
   deleteTablect,
   getTablect,
+  saveTablect,
   setActiveColId,
   setUpdateTablect,
 } from '../../../../features/tablect/tablectSlice';
@@ -20,7 +22,7 @@ import {
 } from '../../../../features/stagelist/stagelistSlice';
 import { toast } from 'react-toastify';
 import {
-  createHistoryPlayback,
+  saveHistoryPlayback,
   getHistoryPlayback,
 } from '../../../../features/historyplayback/historyPlaybackSlice';
 import {
@@ -88,7 +90,7 @@ const TableCT = ({
         } else {
           dispatch(setActiveColId(colId));
         }
-        dispatch(setIsPlaying(false))
+        dispatch(setIsPlaying(false));
       }
     }
   };
@@ -140,44 +142,53 @@ const TableCT = ({
     dispatch(setDuration(0));
   };
 
-  // const handleDeleteClick = async (
-  //   e: React.MouseEvent<HTMLButtonElement>,
-  //   item: ITablectData
-  // ) => {
-  //   e.stopPropagation();
-  //   console.log(item);
-
-  //   if (item.confirm === '') {
-  //     toast.warn('Please confirm before delete!');
-  //     return;
-  //   }
-  //   await dispatch(deleteTablect(item.id_video));
-  //   await dispatch(setActiveItemId(null));
-  //   await dispatch(setActiveColId(null));
-  //   await dispatch(getTablect(search || {}));
-  //   await dispatch(getHistoryPlayback(search || {}));
-  //   await dispatch(setVideoPath(''));
-  // };
+  const handleDeleteClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    item: ITablectData
+  ) => {
+    e.stopPropagation();
+    await dispatch(deleteTablect(item.id_video));
+    await dispatch(setActiveItemId(null));
+    await dispatch(setActiveColId(null));
+    await dispatch(getTablect(search || {}));
+    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(setVideoPath(''));
+  };
 
   const handleConfirm = async () => {
-    const confirmTablect: ITablectPayload[] = tablect.map((item) => ({
-      ...item,
-      nva: JSON.stringify(item.nva),
-      va: JSON.stringify(item.va),
-      confirm: user?.account || '',
-      video_path: item.video_path,
-    }));
-
-    await dispatch(createTableCt(confirmTablect));
-    await dispatch(createHistoryPlayback(history_playback));
+    if (tablect.length === 0) {
+      toast.warning('No data available to confirm!');
+      return;
+    }
+    const confirmTablectData: ITablectPayload[] = tablect
+      .filter((item) => item.confirm === '')
+      .map((item) => ({
+        ...item,
+        nva: JSON.stringify(item.nva),
+        va: JSON.stringify(item.va),
+        confirm: user?.account || '',
+      }));
+    await dispatch(confirmTableCt(confirmTablectData));
     await dispatch(getTablect(search || {}));
     await dispatch(getHistoryPlayback(search || {}));
   };
 
-  const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    console.log('save');
-  }
+  const handleSaveClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    item: ITablectData
+  ) => {
+    e.stopPropagation();
+    const saveTablectData: ITablectPayload = {
+      ...item,
+      nva: JSON.stringify(item.nva),
+      va: JSON.stringify(item.va),
+    };
+    // console.log(tablect);
+    await dispatch(saveTablect(saveTablectData));
+    await dispatch(saveHistoryPlayback(history_playback));
+    await dispatch(getTablect(search || {}));
+    await dispatch(getHistoryPlayback(search || {}));
+  };
 
   const hasAllCTValues = (item: ITablectData) => {
     return (
@@ -358,13 +369,22 @@ const TableCT = ({
                       rowSpan={2}
                     >
                       {hasAllCTValues(item) ? (
-                        <Button
-                          className="bg-blue-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
-                          // handleClick={(e) => handleDeleteClick(e, item)}
-                          handleClick={(e) => handleSaveClick(e)}
-                        >
-                          Save
-                        </Button>
+                        item.is_save ? (
+                          <Button
+                            className="bg-red-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
+                            handleClick={(e) => handleDeleteClick(e, item)}
+                          >
+                            Delete
+                          </Button>
+                        ) : (
+                          <Button
+                            className="bg-blue-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"
+                            // handleClick={(e) => handleDeleteClick(e, item)}
+                            handleClick={(e) => handleSaveClick(e, item)}
+                          >
+                            Save
+                          </Button>
+                        )
                       ) : (
                         <Button
                           className="bg-green-500 px-2 py-0.5 rounded-md text-white cursor-pointer font-medium"

@@ -18,11 +18,11 @@ const initialState: IHistoryPlaybackState = {
   error: null,
 };
 
-export const createHistoryPlayback = createAsyncThunk(
+export const saveHistoryPlayback = createAsyncThunk(
   'historyplayback/create',
   async (payload: IHistoryPlayback[], { rejectWithValue }) => {
     try {
-      await historyplaybackApi.createHistoryPlayback(payload);
+      await historyplaybackApi.saveHistoryPlayback(payload);
       // console.log(data);
     } catch (error) {
       return rejectWithValue(error);
