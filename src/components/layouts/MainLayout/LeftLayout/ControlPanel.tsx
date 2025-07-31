@@ -71,7 +71,13 @@ const ControlPanel = ({
     dispatch(setCurrentTime(newTime));
     if (playerRef.current) {
       playerRef.current.seekTo(newTime, 'seconds');
-      // dispatch(setLastElapsedTime(0))
+    }
+
+    if (newTime === 0) {
+      console.log('Resetting start time to 0');
+      dispatch(setLastElapsedTime(0));
+      dispatch(setCurrentTime(0));
+      dispatch(setStartTime(0));
     }
   };
 
@@ -92,7 +98,7 @@ const ControlPanel = ({
       created_at: new Date().toISOString(),
     };
 
-    dispatch(setTypes({ type, time: lastElapsedTime }));
+    dispatch(setTypes({ type, time: +lastElapsedTime.toFixed(2) }));
     dispatch(setHistoryPlayback(newHistoryPlayback));
   };
 
@@ -107,8 +113,8 @@ const ControlPanel = ({
         setUpdateTablect({
           id_video,
           col_index,
-          nva_time: types.NVA,
-          va_time: types.VA,
+          nva_time: +types.NVA.toFixed(2),
+          va_time: +types.VA.toFixed(2),
         })
       );
     }

@@ -31,6 +31,7 @@ import {
   setIsPlaying,
   setLastElapsedTime,
   setResetTypes,
+  setStartTime,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
 import axiosConfig from '../../../../services/axiosConfig';
@@ -125,6 +126,7 @@ const TableCT = ({
       return;
     }
 
+
     dispatch(
       setUpdateTablect({
         id_video: item.id_video,
@@ -160,6 +162,14 @@ const TableCT = ({
       toast.warning('No data available to confirm!');
       return;
     }
+
+    const isCheckSave = tablect.some((item) => item.is_save === false);
+
+    if (isCheckSave) {
+      toast.warning('Please save all data before confirming!');
+      return;
+    }
+
     const confirmTablectData: ITablectPayload[] = tablect
       .filter((item) => item.confirm === '')
       .map((item) => ({
@@ -168,6 +178,7 @@ const TableCT = ({
         va: JSON.stringify(item.va),
         confirm: user?.account || '',
       }));
+    // console.log(confirmTablectData);
     await dispatch(confirmTableCt(confirmTablectData));
     await dispatch(getTablect(search || {}));
     await dispatch(getHistoryPlayback(search || {}));
@@ -182,6 +193,7 @@ const TableCT = ({
       ...item,
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
+      is_save: true,
     };
     // console.log(tablect);
     await dispatch(saveTablect(saveTablectData));
@@ -259,6 +271,15 @@ const TableCT = ({
 
   const handleRefresh = async () => {
     await dispatch(getTablect(search || {}));
+    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(setActiveItemId(null));
+    await dispatch(setActiveColId(null));
+    await dispatch(setLastElapsedTime(0));
+    await dispatch(setCurrentTime(0));
+    await dispatch(setStartTime(0));
+    await dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
+    await dispatch(setVideoPath(''));
+    await dispatch(setDuration(0));
   };
 
   return (

@@ -101,6 +101,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         cts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         average: 0,
       },
+      is_save: false,
       confirm: '',
       video_path: item.video_path || 'Unknown-video-path',
     };

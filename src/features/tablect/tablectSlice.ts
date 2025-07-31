@@ -134,66 +134,117 @@ export const tablectSlice = createSlice({
           const validNvaCts = item.nva.cts.filter((ct) => ct > 0);
           const validVaCts = item.va.cts.filter((ct) => ct > 0);
 
-          if (validNvaCts.length === 1 && validVaCts.length === 1) {
-            for (let i = 1; i < item.nva.cts.length; i++) {
-              if (item.nva.cts[i] === 0) {
-                item.nva.cts[i] = nva_time + Math.floor(Math.random() * 3);
-              }
-              if (item.va.cts[i] === 0) {
-                item.va.cts[i] = va_time + Math.floor(Math.random() * 3);
-              }
+          const avgNvaCt =
+            validNvaCts.reduce((sum, val) => sum + val, 0) / validNvaCts.length;
+          const avgVaCt =
+            validVaCts.reduce((sum, val) => sum + val, 0) / validVaCts.length;
+
+          const sumNvaCtBefore = validNvaCts.reduce((sum, val) => sum + val, 0);
+          const sumVaCtBefore = validVaCts.reduce((sum, val) => sum + val, 0);
+
+          let sumNvaCtAfter = 0;
+          let sumVaCtAfter = 0;
+
+          for (let i = 0; i < item.nva.cts.length - 1; i++) {
+            const randomOffset = Math.random() * 2 - 1;
+            if (item.nva.cts[i] === 0) {
+              item.nva.cts[i] = Number(
+                (+avgNvaCt.toFixed(2) + randomOffset).toFixed(2)
+              );
+              sumNvaCtAfter += item.nva.cts[i];
             }
-          } else if (validNvaCts.length >= 2 && validVaCts.length >= 2) {
-            const nvaDiffs = validNvaCts
-              .slice(1)
-              .map((ct, i) => Math.abs(ct - validNvaCts[i]));
-            console.log('nvaDiffs: ', nvaDiffs);
-            const vaDiffs = validVaCts
-              .slice(1)
-              .map((ct, i) => Math.abs(ct - validVaCts[i]));
-            console.log('vaDiffs: ', vaDiffs);
-
-            const nvaAvgDiff =
-              nvaDiffs.reduce((sum, diff) => sum + diff, 0) / nvaDiffs.length;
-
-            console.log('nvaAvgDiff: ', nvaAvgDiff);
-
-            const vaAvgDiff =
-              vaDiffs.reduce((sum, diff) => sum + diff, 0) / vaDiffs.length;
-
-            console.log('vaAvgDiff: ', vaAvgDiff);
-
-            const nvaMean =
-              validNvaCts.reduce((sum, ct) => sum + ct, 0) / validNvaCts.length;
-
-            console.log('nvaMean: ', nvaMean);
-
-            const vaMean =
-              validVaCts.reduce((sum, ct) => sum + ct, 0) / validVaCts.length;
-
-            console.log('vaMean: ', vaMean);
-
-            for (let i = 0; i < item.nva.cts.length; i++) {
-              if (item.nva.cts[i] === 0) {
-                item.nva.cts[i] =
-                  Math.ceil(nvaMean) +
-                  Math.round(Math.random() * Math.ceil(nvaAvgDiff));
-              }
-              if (item.va.cts[i] === 0) {
-                item.va.cts[i] =
-                  Math.ceil(vaMean) +
-                  Math.round(Math.random() * Math.ceil(vaAvgDiff));
-              }
+            if (item.va.cts[i] === 0) {
+              item.va.cts[i] = Number(
+                (+avgVaCt.toFixed(2) + randomOffset).toFixed(2)
+              );
+              sumVaCtAfter += item.va.cts[i];
             }
           }
 
-          item.nva.average = Math.round(
+          const lastNvaCt =
+            +avgNvaCt.toFixed(2) * 10 - sumNvaCtBefore - sumNvaCtAfter;
+          const lastVaCt =
+            +avgVaCt.toFixed(2) * 10 - sumVaCtBefore - sumVaCtAfter;
+
+          item.nva.cts[item.nva.cts.length - 1] = Number(lastNvaCt.toFixed(2));
+
+          item.va.cts[item.va.cts.length - 1] = Number(lastVaCt.toFixed(2));
+
+          const averageNvaCt =
             item.nva.cts.reduce((sum, val) => sum + val, 0) /
-              item.nva.cts.length
-          );
-          item.va.average = Math.round(
-            item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length
-          );
+            item.nva.cts.length;
+
+          const averageVaCt =
+            item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length;
+
+            console.log(JSON.stringify(item.nva.cts));
+
+          item.nva.average = Number(averageNvaCt.toFixed(2));
+          item.va.average = Number(averageVaCt.toFixed(2));
+
+          // console.log(item.nva.cts[item.nva.cts.length - 1]);
+
+          // if (validNvaCts.length === 1 && validVaCts.length === 1) {
+          //   for (let i = 1; i < item.nva.cts.length; i++) {
+          //     if (item.nva.cts[i] === 0) {
+          //       item.nva.cts[i] = nva_time + Math.floor(Math.random() * 3);
+          //     }
+          //     if (item.va.cts[i] === 0) {
+          //       item.va.cts[i] = va_time + Math.floor(Math.random() * 3);
+          //     }
+          //   }
+          // } else if (validNvaCts.length >= 2 && validVaCts.length >= 2) {
+          //   const nvaDiffs = validNvaCts
+          //     .slice(1)
+          //     .map((ct, i) => Math.abs(ct - validNvaCts[i]));
+          //   console.log('nvaDiffs: ', nvaDiffs);
+          //   const vaDiffs = validVaCts
+          //     .slice(1)
+          //     .map((ct, i) => Math.abs(ct - validVaCts[i]));
+          //   console.log('vaDiffs: ', vaDiffs);
+
+          //   const nvaAvgDiff =
+          //     nvaDiffs.reduce((sum, diff) => sum + diff, 0) / nvaDiffs.length;
+
+          //   console.log('nvaAvgDiff: ', nvaAvgDiff);
+
+          //   const vaAvgDiff =
+          //     vaDiffs.reduce((sum, diff) => sum + diff, 0) / vaDiffs.length;
+
+          //   console.log('vaAvgDiff: ', vaAvgDiff);
+
+          //   const nvaMean =
+          //     validNvaCts.reduce((sum, ct) => sum + ct, 0) / validNvaCts.length;
+
+          //   console.log('nvaMean: ', nvaMean);
+
+          //   const vaMean =
+          //     validVaCts.reduce((sum, ct) => sum + ct, 0) / validVaCts.length;
+
+          //   console.log('vaMean: ', vaMean);
+
+          //   for (let i = 0; i < item.nva.cts.length; i++) {
+          //     if (item.nva.cts[i] === 0) {
+          //       item.nva.cts[i] =
+          //         Math.ceil(nvaMean) +
+          //         Math.round(Math.random() * Math.ceil(nvaAvgDiff));
+          //     }
+          //     if (item.va.cts[i] === 0) {
+          //       item.va.cts[i] =
+          //         Math.ceil(vaMean) +
+          //         Math.round(Math.random() * Math.ceil(vaAvgDiff));
+          //     }
+          //   }
+          // }
+
+          // item.nva.average = Math.round(
+          //   item.nva.cts.reduce((sum, val) => sum + val, 0) /
+          //     item.nva.cts.length
+          // );
+          // item.va.average = Math.round(
+          //   item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length
+          // );
+
           // const nva_ct1 = nva_time;
           // const va_ct1 = va_time;
           // for (let i = 1; i < item.nva.cts.length; i++) {
