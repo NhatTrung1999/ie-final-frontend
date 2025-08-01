@@ -208,7 +208,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
             <Div
               key={index}
               className={`${
-                item.id === activeItemId ? 'bg-white' : ''
+                item.id === activeItemId ? 'bg-slate-200' : ''
               } hover:bg-gray-200 px-3 py-1 flex flex-row justify-between items-center cursor-pointer`}
               onClick={() => {
                 if (item.id === activeItemId) {

@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import Lottie from 'lottie-react';
-import useWindowSize from '../../../hooks/useWindowSize';
+// import useWindowSize from '../../../hooks/useWindowSize';
 import { Button, Div, Form, Input, Label, Option, Select } from '../../ui';
 import loadingData from '../../../assets/lotties/loading.json';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -24,7 +24,7 @@ interface IFormInput {
 }
 
 const LoginLayout = () => {
-  const { width, height } = useWindowSize();
+  // const { width, height } = useWindowSize();
   const {
     register,
     handleSubmit,

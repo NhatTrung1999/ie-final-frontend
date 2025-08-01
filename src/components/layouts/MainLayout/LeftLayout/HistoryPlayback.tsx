@@ -69,21 +69,21 @@ const HistoryPlayback = ({
           .map((item, index) => (
             <Div
               key={index}
-              className="flex items-center p-1 bg-amber-400 gap-1 rounded-md text-white cursor-pointer"
+              className="flex items-center p-1 bg-slate-300 gap-1 rounded-md text-white cursor-pointer"
               onClick={() => handleSeekTo(item)}
             >
-              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+              <Div className="flex-1 bg-gray-600 text-center px-2 py-1 rounded-md text-lg font-semibold">
                 {formatTime(item.start_time)}
               </Div>
-              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+              <Div className="flex-1 bg-gray-600 text-center px-2 py-1 rounded-md text-lg font-semibold">
                 {formatTime(item.end_time)}
               </Div>
-              <Div className="flex-1 bg-gray-500 text-center px-2 py-1 rounded-md text-lg font-semibold">
+              <Div className="flex-1 bg-gray-600 text-center px-2 py-1 rounded-md text-lg font-semibold">
                 {item.type}
               </Div>
               <Button
                 disabled={hasAllCTValues()}
-                className="p-2 bg-gray-500 rounded-md"
+                className="p-2 bg-gray-600 rounded-md"
                 handleClick={(e) => handleDeleteHistoryPlayback(e, item)}
               >
                 <FaTrash size={20} />

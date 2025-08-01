@@ -90,6 +90,8 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
             <Option value="SMS" name="SMS" />
             <Option value="CS1" name="CS1" />
             <Option value="CS2" name="CS2" />
+            <Option value="CS3" name="CS3" />
+            <Option value="MASSPRODUCTION" name="MASS PRODUCTION" />
             <Option value="Customer" name="Customer" />
           </Select>
           <Select {...register('area')}>
