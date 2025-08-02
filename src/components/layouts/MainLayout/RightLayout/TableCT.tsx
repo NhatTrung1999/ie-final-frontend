@@ -66,7 +66,7 @@ const TableCT = ({
 
   useEffect(() => {
     const getTablects = async () => {
-      await dispatch(getTablect(search || {}));
+      await dispatch(getTablect({ ...search, account: user?.account }));
     };
 
     getTablects();
@@ -126,7 +126,6 @@ const TableCT = ({
       return;
     }
 
-
     dispatch(
       setUpdateTablect({
         id_video: item.id_video,
@@ -152,8 +151,8 @@ const TableCT = ({
     await dispatch(deleteTablect(item.id_video));
     await dispatch(setActiveItemId(null));
     await dispatch(setActiveColId(null));
-    await dispatch(getTablect(search || {}));
-    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(getTablect({ ...search, account: user?.account }));
+    await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
     await dispatch(setVideoPath(''));
   };
 
@@ -180,8 +179,8 @@ const TableCT = ({
       }));
     // console.log(confirmTablectData);
     await dispatch(confirmTableCt(confirmTablectData));
-    await dispatch(getTablect(search || {}));
-    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(getTablect({ ...search, account: user?.account }));
+    await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
   };
 
   const handleSaveClick = async (
@@ -194,12 +193,13 @@ const TableCT = ({
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
       is_save: true,
+      created_by: user?.account || '',
     };
     // console.log(tablect);
     await dispatch(saveTablect(saveTablectData));
     await dispatch(saveHistoryPlayback(history_playback));
-    await dispatch(getTablect(search || {}));
-    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(getTablect({ ...search, account: user?.account }));
+    await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
   };
 
   const hasAllCTValues = (item: ITablectData) => {
@@ -270,8 +270,8 @@ const TableCT = ({
   };
 
   const handleRefresh = async () => {
-    await dispatch(getTablect(search || {}));
-    await dispatch(getHistoryPlayback(search || {}));
+    await dispatch(getTablect({ ...search, account: user?.account }));
+    await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
     await dispatch(setActiveItemId(null));
     await dispatch(setActiveColId(null));
     await dispatch(setLastElapsedTime(0));

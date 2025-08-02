@@ -93,7 +93,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
 
       if (uploadVideo.fulfilled.match(uploadResult)) {
         setIsOpen?.(false);
-        dispatch(getVideo(search || {}));
+        dispatch(getVideo({ ...search, account: user?.account }));
         dispatch(resetMessage());
       }
     }

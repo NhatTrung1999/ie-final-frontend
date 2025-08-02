@@ -31,7 +31,7 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
 
   useEffect(() => {
     if (search) {
-      dispatch(getVideo(search));
+      dispatch(getVideo({ ...search, account: user?.account }));
     }
   }, [dispatch]);
 
@@ -55,10 +55,10 @@ const HeaderLayout = ({ headerHeight }: { headerHeight: number }) => {
   };
 
   const onSubmit: SubmitHandler<ISearch> = async (data) => {
-    await dispatch(getVideo(data));
-    await dispatch(getTablect(data));
-    await dispatch(getHistoryPlayback(data));
-    await dispatch(setSearch(data));
+    await dispatch(getVideo({ ...data, account: user?.account }));
+    await dispatch(getTablect({ ...data, account: user?.account }));
+    await dispatch(getHistoryPlayback({ ...data, account: user?.account }));
+    await dispatch(setSearch({ ...data, account: user?.account }));
     await dispatch(setVideoPath(''));
     await dispatch(setActiveItemId(null));
     await dispatch(setCurrentTime(0));

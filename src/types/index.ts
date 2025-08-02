@@ -132,6 +132,7 @@ export interface ITablectPayload {
   confirm: string;
   video_path?: string;
   is_save?: boolean
+  created_by?: string;
 }
 
 export interface IHistoryPlayback {
@@ -151,4 +152,5 @@ export interface ISearch {
   stage?: string;
   area?: string;
   article?: string;
+  account?: string;
 }

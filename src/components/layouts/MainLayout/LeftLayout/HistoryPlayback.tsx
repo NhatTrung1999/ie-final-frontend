@@ -21,12 +21,13 @@ const HistoryPlayback = ({
   const { history_playback } = useAppSelector((state) => state.historyPlayback);
   const { activeItemId, search } = useAppSelector((state) => state.stagelist);
   const { tablect } = useAppSelector((state) => state.tablect);
+  const { user } = useAppSelector((state) => state.auth);
   // const { types } = useAppSelector((state) => state.ctrlpanel);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     const getHistoryPlaybacks = async () => {
-      await dispatch(getHistoryPlayback(search || {}));
+      await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
     };
     getHistoryPlaybacks();
   }, [dispatch]);

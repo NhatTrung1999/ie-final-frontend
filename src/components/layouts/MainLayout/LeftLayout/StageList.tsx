@@ -38,6 +38,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
     (state) => state.stagelist
   );
   const { tablect } = useAppSelector((state) => state.tablect);
+  const { user } = useAppSelector((state) => state.auth);
 
   const stagelistItem = stagelist.filter(
     (st) => st.name.toLowerCase() === activeTabId.toLowerCase()
@@ -86,10 +87,12 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
       return;
     }
 
+    // console.log(item.video_name.split('. ')[1].split('.')[0]);
+
     const newTablectData: ITablectData = {
       id_video: item.id,
       no: item.video_name.split('. ')[0] || 'Unknown',
-      progress_stage_part_name: item.video_name.split('. ')[1] || 'Unknown',
+      progress_stage_part_name: item.video_name?.split('. ')[1]?.split('.')[0] || 'Unknown',
       area: item.area,
       nva: {
         type: 'NVA',
@@ -118,7 +121,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         return;
       }
       await stagelistApi.deleteVideo(id);
-      await dispatch(getVideo(search || {}));
+      await dispatch(getVideo({ ...search, account: user?.account }));
       toast.success('Delete successful!');
       setIsOpenDel(false);
     } catch (error: any) {
@@ -164,7 +167,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
   };
 
   const handleRefresh = async () => {
-    await dispatch(getVideo(search || {}));
+    await dispatch(getVideo({ ...search, account: user?.account }));
   };
 
   return (
