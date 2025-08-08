@@ -122,11 +122,15 @@ export const tablectSlice = createSlice({
           va_time !== undefined
         ) {
           if (is_update_all_cts) {
-            item.nva.cts[col_index] = nva_time;
-            item.va.cts[col_index] = va_time;
+            item.nva.cts[col_index] = Number(nva_time.toFixed(2));
+            item.va.cts[col_index] = Number(va_time.toFixed(2));
           } else {
-            item.nva.cts[col_index] = (item.nva.cts[col_index] || 0) + nva_time;
-            item.va.cts[col_index] = (item.va.cts[col_index] || 0) + va_time;
+            item.nva.cts[col_index] = Number(
+              ((item.nva.cts[col_index] || 0) + nva_time).toFixed(2)
+            );
+            item.va.cts[col_index] = Number(
+              ((item.va.cts[col_index] || 0) + va_time).toFixed(2)
+            );
           }
         }
 
@@ -177,7 +181,7 @@ export const tablectSlice = createSlice({
           const averageVaCt =
             item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length;
 
-            console.log(JSON.stringify(item.nva.cts));
+          console.log(JSON.stringify(item.nva.cts));
 
           item.nva.average = Number(averageNvaCt.toFixed(2));
           item.va.average = Number(averageVaCt.toFixed(2));

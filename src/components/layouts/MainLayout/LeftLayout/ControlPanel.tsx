@@ -18,6 +18,7 @@ import { CardHeader } from '../../../common';
 import { Button, Div, Input } from '../../../ui';
 import { FaPlay, FaCheck, FaPause } from 'react-icons/fa';
 import { debounce } from '../../../../utils/debounce';
+import { useCallback } from 'react';
 
 const ControlPanel = ({
   controlPanelHeight,
@@ -58,9 +59,12 @@ const ControlPanel = ({
     }
   };
 
-  const debounceToast = debounce(() => {
-    toast.warn("You can't rewind while the video is playing!");
-  }, 300);
+  const debounceToast = useCallback(
+    debounce(() => {
+      toast.warn("You can't rewind while the video is playing!");
+    }, 300),
+    []
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isPlaying) {
@@ -74,7 +78,6 @@ const ControlPanel = ({
     }
 
     if (newTime === 0) {
-      console.log('Resetting start time to 0');
       dispatch(setLastElapsedTime(0));
       dispatch(setCurrentTime(0));
       dispatch(setStartTime(0));
@@ -97,8 +100,7 @@ const ControlPanel = ({
       created_by: user?.account || 'unknown',
       created_at: new Date().toISOString(),
     };
-
-    dispatch(setTypes({ type, time: +lastElapsedTime.toFixed(2) }));
+    dispatch(setTypes({ type, time: Number(lastElapsedTime.toFixed(2)) }));
     dispatch(setHistoryPlayback(newHistoryPlayback));
   };
 
@@ -113,8 +115,8 @@ const ControlPanel = ({
         setUpdateTablect({
           id_video,
           col_index,
-          nva_time: +types.NVA.toFixed(2),
-          va_time: +types.VA.toFixed(2),
+          nva_time: Number(types.NVA.toFixed(2)),
+          va_time: Number(types.VA.toFixed(2)),
         })
       );
     }
@@ -173,7 +175,7 @@ const ControlPanel = ({
           >
             <Div className="flex-1">NVA</Div>
             <Div className="bg-white flex-1 rounded-md text-black">
-              {types.NVA}
+              {types.NVA.toFixed(2)}
             </Div>
           </Button>
           <Button
@@ -183,7 +185,7 @@ const ControlPanel = ({
           >
             <Div className="flex-1">VA</Div>
             <Div className="bg-white flex-1 rounded-md text-black">
-              {types.VA}
+              {types.VA.toFixed(2)}
             </Div>
           </Button>
           <Button
@@ -193,7 +195,7 @@ const ControlPanel = ({
           >
             <Div className="flex-1">SKIP</Div>
             <Div className="bg-white flex-1 rounded-md text-black">
-              {types.SKIP}
+              {types.SKIP.toFixed(2)}
             </Div>
           </Button>
         </Div>

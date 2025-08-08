@@ -43,10 +43,11 @@ const HistoryPlayback = ({
     item: IHistoryPlayback
   ) => {
     e.stopPropagation();
+    console.log(item);
     const time = item.end_time - item.start_time;
-    console.log(time);
-    dispatch(setDiffTypes({ type: item.type, time: Math.floor(time) }));
-    dispatch(deleteHistoryPlayback(item.id_historyplayback));
+    console.log(item.end_time, item.start_time);
+    // dispatch(setDiffTypes({ type: item.type, time: Math.floor(time) }));
+    // dispatch(deleteHistoryPlayback(item.id_historyplayback));
   };
 
   const hasAllCTValues = () => {
