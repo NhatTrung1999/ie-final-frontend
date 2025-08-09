@@ -27,10 +27,16 @@ const Player = ({ playerHeight }: { playerHeight: number }) => {
         muted
         onDuration={(duration: number) => dispatch(setDuration(duration))}
         onProgress={(state: { playedSeconds: number }) => {
-          // console.log(+state.playedSeconds.toFixed(2));
+          // console.log('progress: ', Number(state.playedSeconds.toFixed(2)));
           dispatch(setCurrentTime(Number(state.playedSeconds.toFixed(2))));
         }}
-        progressInterval={10}
+        progressInterval={100}
+        onPause={() => {
+          if(playerRef.current) {
+            // console.log('pause', Number(playerRef.current.getCurrentTime().toFixed(2)));
+            setCurrentTime(Number(playerRef.current.getCurrentTime().toFixed(2)))
+          }
+        }}
       />
     </Div>
   );

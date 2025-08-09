@@ -43,11 +43,11 @@ const HistoryPlayback = ({
     item: IHistoryPlayback
   ) => {
     e.stopPropagation();
-    console.log(item);
+    // console.log(item);
     const time = item.end_time - item.start_time;
-    console.log(item.end_time, item.start_time);
-    // dispatch(setDiffTypes({ type: item.type, time: Math.floor(time) }));
-    // dispatch(deleteHistoryPlayback(item.id_historyplayback));
+    // console.log(time);
+    dispatch(setDiffTypes({ type: item.type, time: Number(time.toFixed(2)) }));
+    dispatch(deleteHistoryPlayback(item.id_historyplayback));
   };
 
   const hasAllCTValues = () => {
@@ -81,7 +81,7 @@ const HistoryPlayback = ({
                 {formatTime(item.end_time)}
               </Div>
               <Div className="flex-1 bg-gray-600 text-center px-2 py-1 rounded-md text-lg font-semibold">
-                {item.type}
+                {item.type} - {(item.end_time - item.start_time).toFixed(2)}
               </Div>
               <Button
                 disabled={hasAllCTValues()}

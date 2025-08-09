@@ -29,7 +29,7 @@ import {
   setCurrentTime,
   setDuration,
   setIsPlaying,
-  setLastElapsedTime,
+  // setLastElapsedTime,
   setResetTypes,
   setStartTime,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
@@ -108,7 +108,7 @@ const TableCT = ({
     }
     dispatch(setActiveColId(null));
     dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
-    dispatch(setLastElapsedTime(0));
+    // dispatch(setLastElapsedTime(0));
     dispatch(setIsPlaying(false));
   };
 
@@ -217,7 +217,7 @@ const TableCT = ({
           '/export-excel/export-excel-time-study',
           {
             responseType: 'blob',
-            params: { ...search },
+            params: { ...search, account: user?.account },
           }
         );
 
@@ -247,7 +247,7 @@ const TableCT = ({
           '/export-excel/export-excel-lsa',
           {
             responseType: 'blob',
-            params: search,
+            params: {...search, account: user?.account}
           }
         );
 
@@ -274,12 +274,13 @@ const TableCT = ({
     await dispatch(getHistoryPlayback({ ...search, account: user?.account }));
     await dispatch(setActiveItemId(null));
     await dispatch(setActiveColId(null));
-    await dispatch(setLastElapsedTime(0));
+    // await dispatch(setLastElapsedTime(0));
     await dispatch(setCurrentTime(0));
     await dispatch(setStartTime(0));
     await dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
     await dispatch(setVideoPath(''));
     await dispatch(setDuration(0));
+    await dispatch(setIsPlaying(false))
   };
 
   return (

@@ -6,7 +6,7 @@ interface ICtrlPanelState {
   currentTime: number;
   startTime: number;
   stopTime: number;
-  lastElapsedTime: number;
+  // lastElapsedTime: number;
   types: { [key in string]: number };
 }
 
@@ -16,7 +16,7 @@ const initialState: ICtrlPanelState = {
   currentTime: 0,
   startTime: 0,
   stopTime: 0,
-  lastElapsedTime: 0,
+  // lastElapsedTime: 0,
   types: {
     NVA: 0,
     VA: 0,
@@ -35,6 +35,7 @@ const ctrlpanelSlice = createSlice({
       state.duration = action.payload;
     },
     setCurrentTime: (state, action: PayloadAction<number>) => {
+      // console.log(action.payload);
       state.currentTime = action.payload;
     },
     setStartTime: (state, action: PayloadAction<number>) => {
@@ -43,9 +44,9 @@ const ctrlpanelSlice = createSlice({
     setStopTime: (state, action: PayloadAction<number>) => {
       state.stopTime = action.payload;
     },
-    setLastElapsedTime: (state, action: PayloadAction<number>) => {
-      state.lastElapsedTime = action.payload;
-    },
+    // setLastElapsedTime: (state, action: PayloadAction<number>) => {
+    //   state.lastElapsedTime = action.payload;
+    // },
     setTypes: (
       state,
       action: PayloadAction<{ type: string; time: number }>
@@ -74,7 +75,7 @@ export const {
   setCurrentTime,
   setStartTime,
   setStopTime,
-  setLastElapsedTime,
+  // setLastElapsedTime,
   setTypes,
   setDiffTypes,
   setResetTypes,

@@ -21,7 +21,7 @@ import {
   setCurrentTime,
   setDuration,
   setIsPlaying,
-  setLastElapsedTime,
+  // setLastElapsedTime,
   setResetTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 
@@ -225,7 +225,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
                 handleSelectedItem(item);
                 dispatch(setActiveColId(null));
                 dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
-                dispatch(setLastElapsedTime(0));
+                // dispatch(setLastElapsedTime(0));
                 dispatch(setIsPlaying(false));
               }}
             >

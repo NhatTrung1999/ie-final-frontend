@@ -55,7 +55,7 @@ const LoginLayout = () => {
   return (
     <Div
       // style={{ height, width }}
-      className="border-2 flex justify-center items-center bg-[#F3F4F6] h-screen"
+      className="flex justify-center items-center bg-[#F3F4F6] h-screen"
     >
       <Div
         // style={{ height: height - 400, width: width - 600 }}

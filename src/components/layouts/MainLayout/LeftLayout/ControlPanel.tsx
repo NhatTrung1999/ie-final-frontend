@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   setCurrentTime,
   setIsPlaying,
-  setLastElapsedTime,
+  // setLastElapsedTime,
   setResetTypes,
   setStartTime,
   setStopTime,
@@ -18,7 +18,7 @@ import { CardHeader } from '../../../common';
 import { Button, Div, Input } from '../../../ui';
 import { FaPlay, FaCheck, FaPause } from 'react-icons/fa';
 import { debounce } from '../../../../utils/debounce';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 const ControlPanel = ({
   controlPanelHeight,
@@ -32,7 +32,7 @@ const ControlPanel = ({
     currentTime,
     startTime,
     types,
-    lastElapsedTime,
+    // lastElapsedTime,
   } = useAppSelector((state) => state.ctrlpanel);
   const { activeColId } = useAppSelector((state) => state.tablect);
   const { activeItemId } = useAppSelector((state) => state.stagelist);
@@ -41,7 +41,7 @@ const ControlPanel = ({
 
   const dispatch = useAppDispatch();
 
-  const handleStartStop = () => {
+  const handleStartStop = useCallback(() => {
     if (!isPlaying) {
       dispatch(setStartTime(currentTime));
       dispatch(setIsPlaying(true));
@@ -53,11 +53,26 @@ const ControlPanel = ({
     } else {
       // console.log('endTime', currentTime);
       dispatch(setStopTime(currentTime));
-      const elapsedTime = currentTime - startTime;
-      dispatch(setLastElapsedTime(elapsedTime));
+      // const elapsedTime = currentTime - startTime;
+      // dispatch(setLastElapsedTime(elapsedTime));
       dispatch(setIsPlaying(false));
     }
-  };
+  }, [activeColId, isPlaying, currentTime, dispatch, playerRef]);
+
+  useEffect(() => {
+    // console.log(activeColId);
+    if (!activeColId) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleStartStop();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleStartStop, activeColId]);
 
   const debounceToast = useCallback(
     debounce(() => {
@@ -72,13 +87,13 @@ const ControlPanel = ({
       return;
     }
     const newTime = Number(e.target.value);
-    dispatch(setCurrentTime(newTime));
+    // dispatch(setCurrentTime(newTime));
     if (playerRef.current) {
       playerRef.current.seekTo(newTime, 'seconds');
     }
 
     if (newTime === 0) {
-      dispatch(setLastElapsedTime(0));
+      // dispatch(setLastElapsedTime(0));
       dispatch(setCurrentTime(0));
       dispatch(setStartTime(0));
     }
@@ -91,6 +106,13 @@ const ControlPanel = ({
       return;
     }
 
+    const lastElapsedTime = currentTime - startTime;
+
+    if (Number(lastElapsedTime) < 0) {
+      toast.warn('The value is invalid!')
+      return
+    }
+
     const newHistoryPlayback: IHistoryPlayback = {
       id_historyplayback: `${activeItemId}${history_playback.length}`,
       id_tablect: activeItemId,
@@ -100,8 +122,10 @@ const ControlPanel = ({
       created_by: user?.account || 'unknown',
       created_at: new Date().toISOString(),
     };
+    // console.log('currentTime: ', currentTime, 'startTime: ', startTime);
     dispatch(setTypes({ type, time: Number(lastElapsedTime.toFixed(2)) }));
     dispatch(setHistoryPlayback(newHistoryPlayback));
+    // console.log(currentTime - startTime);
   };
 
   const handleClickDone = () => {
