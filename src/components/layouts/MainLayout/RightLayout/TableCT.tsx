@@ -14,7 +14,8 @@ import {
   getTablect,
   saveTablect,
   setActiveColId,
-  setUpdateTablect,
+  // setUpdateTablect,
+  setUpdateTablectWithoutFormula,
 } from '../../../../features/tablect/tablectSlice';
 import {
   setActiveItemId,
@@ -82,8 +83,8 @@ const TableCT = ({
       const itemTablect = tablect.find(
         (item) => item.id_video === activeItemId
       );
-      const isValidNVA = itemTablect?.nva.cts.every((value) => value > 0);
-      const isValidVA = itemTablect?.va.cts.every((value) => value > 0);
+      const isValidNVA = itemTablect?.nva.cts.some((value) => value > 0);
+      const isValidVA = itemTablect?.va.cts.some((value) => value > 0);
       const colRowId = colId.split('-')[0];
       if (activeItemId === Number(colRowId)) {
         if (colId === activeColId || (isValidNVA && isValidVA)) {
@@ -126,8 +127,18 @@ const TableCT = ({
       return;
     }
 
+    // dispatch(
+    //   setUpdateTablect({
+    // id_video: item.id_video,
+    // col_index: 0,
+    // nva_time: item.nva.cts[0],
+    // va_time: item.va.cts[0],
+    // is_update_all_cts: true,
+    //   })
+    // );
+
     dispatch(
-      setUpdateTablect({
+      setUpdateTablectWithoutFormula({
         id_video: item.id_video,
         col_index: 0,
         nva_time: item.nva.cts[0],
@@ -203,10 +214,11 @@ const TableCT = ({
   };
 
   const hasAllCTValues = (item: ITablectData) => {
-    return (
-      item.nva.cts.every((item) => item > 0) &&
-      item.va.cts.every((item) => item > 0)
-    );
+    // return (
+    //   item.nva.cts.every((item) => item > 0) &&
+    //   item.va.cts.every((item) => item > 0)
+    // );
+    return item.nva.average > 0 && item.va.average > 0;
   };
 
   const handleExportExcelTimeStudy = async () => {
@@ -247,7 +259,7 @@ const TableCT = ({
           '/export-excel/export-excel-lsa',
           {
             responseType: 'blob',
-            params: {...search, account: user?.account}
+            params: { ...search, account: user?.account },
           }
         );
 
@@ -280,7 +292,7 @@ const TableCT = ({
     await dispatch(setResetTypes({ NVA: 0, VA: 0, SKIP: 0 }));
     await dispatch(setVideoPath(''));
     await dispatch(setDuration(0));
-    await dispatch(setIsPlaying(false))
+    await dispatch(setIsPlaying(false));
   };
 
   return (

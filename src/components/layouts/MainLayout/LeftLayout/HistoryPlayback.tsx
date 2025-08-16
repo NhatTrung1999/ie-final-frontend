@@ -54,7 +54,8 @@ const HistoryPlayback = ({
     const item = tablect.find((tc) => tc.id_video === activeItemId);
     if (item) {
       return (
-        item.nva.cts.every((ct) => ct > 0) && item.va.cts.every((ct) => ct > 0)
+        // item.nva.cts.every((ct) => ct > 0) && item.va.cts.every((ct) => ct > 0)
+        item.nva.average > 0 && item.va.average > 0
       );
     }
   };
@@ -81,7 +82,7 @@ const HistoryPlayback = ({
                 {formatTime(item.end_time)}
               </Div>
               <Div className="flex-1 bg-gray-600 text-center px-2 py-1 rounded-md text-lg font-semibold">
-                {item.type} - {(item.end_time - item.start_time).toFixed(2)}
+                {item.type}: {(item.end_time - item.start_time).toFixed(2)}
               </Div>
               <Button
                 disabled={hasAllCTValues()}

@@ -10,7 +10,10 @@ import {
   setTypes,
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import { setHistoryPlayback } from '../../../../features/historyplayback/historyPlaybackSlice';
-import { setUpdateTablect } from '../../../../features/tablect/tablectSlice';
+import {
+  // setUpdateTablect,
+  setUpdateTablectWithoutFormula,
+} from '../../../../features/tablect/tablectSlice';
 import { usePlayer } from '../../../../hooks/usePlayer';
 import type { IHistoryPlayback } from '../../../../types';
 import { formatTime } from '../../../../utils/formatTime';
@@ -109,8 +112,8 @@ const ControlPanel = ({
     const lastElapsedTime = currentTime - startTime;
 
     if (Number(lastElapsedTime) < 0) {
-      toast.warn('The value is invalid!')
-      return
+      toast.warn('The value is invalid!');
+      return;
     }
 
     const newHistoryPlayback: IHistoryPlayback = {
@@ -135,8 +138,16 @@ const ControlPanel = ({
         return;
       }
       const [id_video, col_index] = activeColId.split('-').map(Number);
+      // dispatch(
+      //   setUpdateTablect({
+      //     id_video,
+      //     col_index,
+      //     nva_time: Number(types.NVA.toFixed(2)),
+      //     va_time: Number(types.VA.toFixed(2)),
+      //   })
+      // );
       dispatch(
-        setUpdateTablect({
+        setUpdateTablectWithoutFormula({
           id_video,
           col_index,
           nva_time: Number(types.NVA.toFixed(2)),

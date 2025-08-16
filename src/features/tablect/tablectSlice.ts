@@ -181,8 +181,6 @@ export const tablectSlice = createSlice({
           const averageVaCt =
             item.va.cts.reduce((sum, val) => sum + val, 0) / item.va.cts.length;
 
-          console.log(JSON.stringify(item.nva.cts));
-
           item.nva.average = Number(averageNvaCt.toFixed(2));
           item.va.average = Number(averageVaCt.toFixed(2));
 
@@ -270,6 +268,52 @@ export const tablectSlice = createSlice({
         }
       }
     },
+    setUpdateTablectWithoutFormula: (
+      state,
+      action: PayloadAction<{
+        id_video: number;
+        col_index: number;
+        nva_time: number;
+        va_time: number;
+        is_update_all_cts?: boolean;
+      }>
+    ) => {
+      const { id_video, col_index, nva_time, va_time, is_update_all_cts } =
+        action.payload;
+      const item = state.tablect.find((t) => t.id_video === id_video);
+      if (item) {
+        if (
+          col_index !== undefined &&
+          nva_time !== undefined &&
+          va_time !== undefined
+        ) {
+          if (is_update_all_cts) {
+            item.nva.cts[col_index] = Number(nva_time.toFixed(2));
+            item.va.cts[col_index] = Number(va_time.toFixed(2));
+          } else {
+            item.nva.cts[col_index] = Number(
+              ((item.nva.cts[col_index] || 0) + nva_time).toFixed(2)
+            );
+            item.va.cts[col_index] = Number(
+              ((item.va.cts[col_index] || 0) + va_time).toFixed(2)
+            );
+          }
+        }
+
+        if (is_update_all_cts) {
+          const validNvaCts = item.nva.cts.filter((ct) => ct > 0);
+          const validVaCts = item.va.cts.filter((ct) => ct > 0);
+
+          const avgNvaCt =
+            validNvaCts.reduce((sum, val) => sum + val, 0) / validNvaCts.length;
+          const avgVaCt =
+            validVaCts.reduce((sum, val) => sum + val, 0) / validVaCts.length;
+
+          item.nva.average = +avgNvaCt.toFixed(2);
+          item.va.average = +avgVaCt.toFixed(2);
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -287,7 +331,11 @@ export const tablectSlice = createSlice({
   },
 });
 
-export const { setTablectData, setActiveColId, setUpdateTablect } =
-  tablectSlice.actions;
+export const {
+  setTablectData,
+  setActiveColId,
+  setUpdateTablect,
+  setUpdateTablectWithoutFormula,
+} = tablectSlice.actions;
 
 export default tablectSlice.reducer;

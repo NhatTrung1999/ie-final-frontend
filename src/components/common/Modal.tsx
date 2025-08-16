@@ -83,6 +83,7 @@ const Modal = ({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) => {
             stage,
             area,
             article,
+            factory: user?.factory as string,
             video,
             created_by: user?.account || 'unknown',
             signal: abortControllerRef.current.signal,

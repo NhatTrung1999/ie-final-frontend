@@ -74,6 +74,7 @@ export interface IFormPayload {
   stage: string;
   area: string;
   article: string;
+  factory: string;
   video: FileList;
   created_by: string;
   signal?: AbortSignal;

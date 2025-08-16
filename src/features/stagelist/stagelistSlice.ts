@@ -97,7 +97,7 @@ export const uploadVideo = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    const { date, season, stage, area, article, video, created_by, signal } =
+    const { date, season, stage, area, article, factory, video, created_by, signal } =
       payload;
     const formData = new FormData();
 
@@ -106,6 +106,7 @@ export const uploadVideo = createAsyncThunk(
     formData.append('stage', stage.trim());
     formData.append('area', area.trim());
     formData.append('article', article.toUpperCase().trim());
+    formData.append('factory', factory.toUpperCase().trim());
     formData.append('created_by', created_by.trim());
 
     if (video) {
