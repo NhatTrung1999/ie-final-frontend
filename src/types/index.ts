@@ -99,6 +99,7 @@ export interface ITablectHeader {
   type: string;
   cts: number;
   average: string;
+  machine_type: string;
   confirm: string;
   action: string;
 }
@@ -132,7 +133,7 @@ export interface ITablectPayload {
   va: string;
   confirm: string;
   video_path?: string;
-  is_save?: boolean
+  is_save?: boolean;
   created_by?: string;
 }
 

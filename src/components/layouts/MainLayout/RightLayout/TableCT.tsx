@@ -36,6 +36,7 @@ import {
 } from '../../../../features/ctrlpanel/ctrlpanelSlice';
 import type { AxiosResponse } from 'axios';
 import axiosConfig from '../../../../services/axiosConfig';
+import Select from 'react-select';
 
 const header: ITablectHeader[] = [
   {
@@ -44,9 +45,16 @@ const header: ITablectHeader[] = [
     type: 'Type',
     cts: 10,
     average: 'Average',
+    machine_type: 'Machine Type',
     confirm: 'Confirm',
     action: 'Action',
   },
+];
+
+const options = [
+  { value: 'chocolate', label: 'Attaching eyestay  擦胶贴眼片(Dán đệm đế)' },
+  { value: 'strawberry', label: 'Marking 画线(Định vị)' },
+  { value: 'vanilla', label: 'Pressing for heel後踵定型机 ' },
 ];
 
 const TableCT = ({
@@ -339,6 +347,9 @@ const TableCT = ({
                     {item.average}
                   </th>
                   <th className="border border-gray-500 border-t-0 px-2 py-1">
+                    {item.machine_type}
+                  </th>
+                  <th className="border border-gray-500 border-t-0 px-2 py-1">
                     {item.confirm}
                   </th>
                   <th className="border border-gray-500 border-t-0 border-r-0 px-2 py-1">
@@ -393,13 +404,19 @@ const TableCT = ({
                       {item.nva?.average}
                     </td>
                     <td
+                      className="border border-gray-500 text-center p-1"
+                      rowSpan={2}
+                    >
+                      <Select options={options} />
+                    </td>
+                    <td
                       className="border border-gray-500 text-center"
                       rowSpan={2}
                     >
                       {item.confirm}
                     </td>
                     <td
-                      className="border border-gray-500 text-center border-r-0"
+                      className="border border-gray-500 text-center border-r-0 p-1"
                       rowSpan={2}
                     >
                       {hasAllCTValues(item) ? (
