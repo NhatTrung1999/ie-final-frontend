@@ -11,6 +11,7 @@ import {
   confirmTableCt,
   // createTableCt,
   deleteTablect,
+  getMachineType,
   getTablect,
   saveTablect,
   setActiveColId,
@@ -51,11 +52,11 @@ const header: ITablectHeader[] = [
   },
 ];
 
-const options = [
-  { value: 'chocolate', label: 'Attaching eyestay  擦胶贴眼片(Dán đệm đế)' },
-  { value: 'strawberry', label: 'Marking 画线(Định vị)' },
-  { value: 'vanilla', label: 'Pressing for heel後踵定型机 ' },
-];
+// const options = [
+//   { value: 'chocolate', label: 'Attaching eyestay  擦胶贴眼片(Dán đệm đế)' },
+//   { value: 'strawberry', label: 'Marking 画线(Định vị)' },
+//   { value: 'vanilla', label: 'Pressing for heel後踵定型机 ' },
+// ];
 
 const TableCT = ({
   tableCtHeight,
@@ -64,7 +65,9 @@ const TableCT = ({
   tableCtHeight: number;
   tableCtWidth: number;
 }) => {
-  const { tablect, activeColId } = useAppSelector((state) => state.tablect);
+  const { tablect, activeColId, machineType } = useAppSelector(
+    (state) => state.tablect
+  );
   const { activeItemId, activeTabId, search } = useAppSelector(
     (state) => state.stagelist
   );
@@ -72,6 +75,13 @@ const TableCT = ({
   const { history_playback } = useAppSelector((state) => state.historyPlayback);
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const getDepartmentMachineType = async () => {
+      await dispatch(getMachineType());
+    };
+    getDepartmentMachineType();
+  }, []);
 
   useEffect(() => {
     const getTablects = async () => {
@@ -404,10 +414,21 @@ const TableCT = ({
                       {item.nva?.average}
                     </td>
                     <td
-                      className="border border-gray-500 text-center p-1"
+                      className="border border-gray-500 text-center mx-auto"
                       rowSpan={2}
                     >
-                      <Select options={options} />
+                      <div
+                        className="w-full flex justify-center items-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="w-52">
+                          {item.machine_type ? (
+                            <div>heloo</div>
+                          ) : (
+                            <Select options={machineType} />
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td
                       className="border border-gray-500 text-center"

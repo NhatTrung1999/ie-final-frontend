@@ -120,6 +120,7 @@ export interface ITablectData {
     average: number;
   };
   is_save?: boolean;
+  machine_type: string;
   confirm: string;
   video_path?: string;
 }
@@ -132,6 +133,7 @@ export interface ITablectPayload {
   nva: string;
   va: string;
   confirm: string;
+  machine_type: string;
   video_path?: string;
   is_save?: boolean;
   created_by?: string;

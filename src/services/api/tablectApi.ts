@@ -19,6 +19,10 @@ const tablectApi = {
   saveTablect: async (payload: ITablectPayload) => {
     await axiosConfig.post('/tablect/save', payload)
   },
+  getMachineType: async () => {
+    const response = await axiosConfig.get('/tablect/get-machine-type');
+    return response.data
+  }
 };
 
 export default tablectApi;

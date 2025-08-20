@@ -11,12 +11,14 @@ interface ITablectState {
   isLoading: boolean;
   error: string | null;
   activeColId: string | null;
+  machineType: {value: string; label: string}[];
 }
 const initialState: ITablectState = {
   tablect: [],
   isLoading: false,
   error: null,
   activeColId: null,
+  machineType: [],
 };
 
 export const confirmTableCt = createAsyncThunk(
@@ -56,6 +58,18 @@ export const getTablect = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(error);
+    }
+  }
+);
+
+export const getMachineType = createAsyncThunk(
+  'tablect/get-machine-type',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await tablectApi.getMachineType();
+      return response
+    } catch (error: any) {
+      return rejectWithValue(error || '');
     }
   }
 );
@@ -325,6 +339,23 @@ export const tablectSlice = createSlice({
         state.tablect = action.payload;
       })
       .addCase(getTablect.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(getMachineType.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getMachineType.fulfilled, (state, action: PayloadAction<any[]>) => {
+        state.isLoading = false;
+        state.machineType = action.payload.map((item) => ({
+          value: `${item.machine_type_cn} - ${item.machine_type_vn}`,
+          label: `${item.machine_type_cn} - ${item.machine_type_vn}`,
+        }));
+      })
+      .addCase(getMachineType.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
