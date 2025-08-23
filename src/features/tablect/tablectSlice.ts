@@ -11,7 +11,8 @@ interface ITablectState {
   isLoading: boolean;
   error: string | null;
   activeColId: string | null;
-  machineType: {value: string; label: string}[];
+  machineType: { value: string; label: string }[];
+  selectedMahineType: { machineTypeValue: string; id_video: number | null };
 }
 const initialState: ITablectState = {
   tablect: [],
@@ -19,6 +20,7 @@ const initialState: ITablectState = {
   error: null,
   activeColId: null,
   machineType: [],
+  selectedMahineType: { machineTypeValue: '', id_video: null },
 };
 
 export const confirmTableCt = createAsyncThunk(
@@ -67,7 +69,7 @@ export const getMachineType = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await tablectApi.getMachineType();
-      return response
+      return response;
     } catch (error: any) {
       return rejectWithValue(error || '');
     }
@@ -282,6 +284,26 @@ export const tablectSlice = createSlice({
         }
       }
     },
+    setSelectedMachineType: (
+      state,
+      // action: PayloadAction<{ value: string; item: ITablectData }>
+      action: PayloadAction<{ machineTypeValue: string; id_video: number | null }>
+    ) => {
+      // console.log(action.payload);
+      state.selectedMahineType = action.payload;
+    },
+    setUpdateMachineType: (
+      state,
+      action: PayloadAction<{ machineTypeValue: string; id: number }>
+    ) => {
+      const { machineTypeValue, id } = action.payload;
+      console.log(machineTypeValue, id);
+      state.tablect.forEach((tb) => {
+        if (tb.id_video === id) {
+          tb.machine_type = machineTypeValue;
+        }
+      });
+    },
     setUpdateTablectWithoutFormula: (
       state,
       action: PayloadAction<{
@@ -348,13 +370,16 @@ export const tablectSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(getMachineType.fulfilled, (state, action: PayloadAction<any[]>) => {
-        state.isLoading = false;
-        state.machineType = action.payload.map((item) => ({
-          value: `${item.machine_type_cn} - ${item.machine_type_vn}`,
-          label: `${item.machine_type_cn} - ${item.machine_type_vn}`,
-        }));
-      })
+      .addCase(
+        getMachineType.fulfilled,
+        (state, action: PayloadAction<any[]>) => {
+          state.isLoading = false;
+          state.machineType = action.payload.map((item) => ({
+            value: `${item.machine_type_cn} - ${item.machine_type_vn}`,
+            label: `${item.machine_type_cn} - ${item.machine_type_vn}`,
+          }));
+        }
+      )
       .addCase(getMachineType.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
@@ -367,6 +392,8 @@ export const {
   setActiveColId,
   setUpdateTablect,
   setUpdateTablectWithoutFormula,
+  setSelectedMachineType,
+  setUpdateMachineType,
 } = tablectSlice.actions;
 
 export default tablectSlice.reducer;

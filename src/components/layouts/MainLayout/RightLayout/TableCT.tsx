@@ -15,6 +15,8 @@ import {
   getTablect,
   saveTablect,
   setActiveColId,
+  setSelectedMachineType,
+  setUpdateMachineType,
   // setUpdateTablect,
   setUpdateTablectWithoutFormula,
 } from '../../../../features/tablect/tablectSlice';
@@ -65,9 +67,8 @@ const TableCT = ({
   tableCtHeight: number;
   tableCtWidth: number;
 }) => {
-  const { tablect, activeColId, machineType } = useAppSelector(
-    (state) => state.tablect
-  );
+  const { tablect, activeColId, machineType, selectedMahineType } =
+    useAppSelector((state) => state.tablect);
   const { activeItemId, activeTabId, search } = useAppSelector(
     (state) => state.stagelist
   );
@@ -101,16 +102,21 @@ const TableCT = ({
       const itemTablect = tablect.find(
         (item) => item.id_video === activeItemId
       );
-      const isValidNVA = itemTablect?.nva.cts.some((value) => value > 0);
-      const isValidVA = itemTablect?.va.cts.some((value) => value > 0);
-      const colRowId = colId.split('-')[0];
-      if (activeItemId === Number(colRowId)) {
-        if (colId === activeColId || (isValidNVA && isValidVA)) {
-          dispatch(setActiveColId(null));
-        } else {
-          dispatch(setActiveColId(colId));
+      console.log(itemTablect);
+      // const isValidNVA = itemTablect?.nva.cts.every((value) => value > 0);
+      // const isValidVA = itemTablect?.va.cts.every((value) => value > 0);
+      if (itemTablect) {
+        const isValidNVA = itemTablect?.nva.average > 0;
+        const isValidVA = itemTablect?.va.average > 0;
+        const colRowId = colId.split('-')[0];
+        if (activeItemId === Number(colRowId)) {
+          if (colId === activeColId || (isValidNVA && isValidVA)) {
+            dispatch(setActiveColId(null));
+          } else {
+            dispatch(setActiveColId(colId));
+          }
+          dispatch(setIsPlaying(false));
         }
-        dispatch(setIsPlaying(false));
       }
     }
   };
@@ -139,6 +145,8 @@ const TableCT = ({
 
     if (!item) return;
 
+    // console.log(selectedMahineType, item);
+
     const isCheckValueCT1 = item.nva.cts[0] === 0 && item.va.cts[0] === 0;
     if (isCheckValueCT1) {
       toast.warn('Please enter your value CT1');
@@ -155,21 +163,43 @@ const TableCT = ({
     //   })
     // );
 
-    dispatch(
-      setUpdateTablectWithoutFormula({
-        id_video: item.id_video,
-        col_index: 0,
-        nva_time: item.nva.cts[0],
-        va_time: item.va.cts[0],
-        is_update_all_cts: true,
-      })
-    );
+    // console.log(selectedMahineType);
+    if (selectedMahineType.machineTypeValue === '') {
+      toast.warn('Please choose your machine type!');
+      return;
+    }
 
-    dispatch(setActiveItemId(null));
-    dispatch(setActiveColId(null));
-    dispatch(setVideoPath(''));
-    dispatch(setCurrentTime(0));
-    dispatch(setDuration(0));
+    // console.log(selectedMahineType.id_video, item.id_video);
+
+    if (selectedMahineType.id_video === item.id_video) {
+      dispatch(
+        setUpdateTablectWithoutFormula({
+          id_video: item.id_video,
+          col_index: 0,
+          nva_time: item.nva.cts[0],
+          va_time: item.va.cts[0],
+          is_update_all_cts: true,
+        })
+      );
+
+      dispatch(
+        setUpdateMachineType({
+          machineTypeValue: selectedMahineType.machineTypeValue,
+          id: selectedMahineType.id_video,
+        })
+      );
+
+      dispatch(setActiveItemId(null));
+      dispatch(setActiveColId(null));
+      dispatch(setVideoPath(''));
+      dispatch(setCurrentTime(0));
+      dispatch(setDuration(0));
+    } else {
+      toast.warn('Please choose your machine type!');
+      return;
+    }
+
+    // dispatch(setSelectedMachineType({ machineTypeValue: '', id_video: null }));
   };
 
   const handleDeleteClick = async (
@@ -217,11 +247,18 @@ const TableCT = ({
     item: ITablectData
   ) => {
     e.stopPropagation();
+    // console.log(item);
+    if (item.machine_type === '') {
+      toast.warn('Please choose your machine type!');
+      return;
+    }
+
     const saveTablectData: ITablectPayload = {
       ...item,
       nva: JSON.stringify(item.nva),
       va: JSON.stringify(item.va),
       is_save: true,
+      machine_type: item.machine_type,
       created_by: user?.account || '',
     };
     // console.log(tablect);
@@ -312,6 +349,13 @@ const TableCT = ({
     await dispatch(setDuration(0));
     await dispatch(setIsPlaying(false));
   };
+
+  // const handleChangeMachineType = (
+  //   e: SingleValue<{ value: string }>,
+  //   item: ITablectData
+  // ) => {
+  //   console.log(e?.value, item);
+  // };
 
   return (
     <Div
@@ -417,18 +461,29 @@ const TableCT = ({
                       className="border border-gray-500 text-center mx-auto"
                       rowSpan={2}
                     >
-                      <div
-                        className="w-full flex justify-center items-center"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="w-52">
-                          {item.machine_type ? (
-                            <div>heloo</div>
-                          ) : (
-                            <Select options={machineType} />
-                          )}
+                      {item.machine_type ? (
+                        <div>{item.machine_type}</div>
+                      ) : (
+                        <div
+                          className="w-full flex justify-center items-center"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="w-52">
+                            <Select
+                              options={machineType}
+                              onChange={(e) =>
+                                dispatch(
+                                  setSelectedMachineType({
+                                    machineTypeValue: e?.value || '',
+                                    id_video: item.id_video,
+                                  })
+                                )
+                              }
+                              isDisabled={activeItemId !== item.id_video}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </td>
                     <td
                       className="border border-gray-500 text-center"

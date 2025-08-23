@@ -105,6 +105,7 @@ const StageList = ({ stageListHeight }: { stageListHeight: number }) => {
         average: 0,
       },
       is_save: false,
+      machine_type: '',
       confirm: '',
       video_path: item.video_path || 'Unknown-video-path',
     };
